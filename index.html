@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>دليل الخدمات – برج النصر</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#f4f7f6;
+  --card:#ffffff;
+  --primary:#0d6efd;
+  --secondary:#6c757d;
+  --success:#25D366;
+  --text:#212529;
+  --muted:#6c757d;
+  --radius:16px;
+  --pad:16px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+  padding:12px var(--pad);
+}
+
+.header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+  font-size:1.1rem;
+}
+
+.brand img{
+  width:28px;
+  height:28px;
+}
+
+.lang-btn{
+  border:1px solid #ddd;
+  background:#fff;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.search-box{
+  margin-top:10px;
+}
+
+.search-box input{
+  width:100%;
+  padding:12px;
+  font-size:1rem;
+  border-radius:12px;
+  border:1px solid #ddd;
+}
+
+main{
+  padding:var(--pad);
+}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
+  padding:var(--pad);
+  margin-bottom:16px;
+}
+
+.card-top{
+  display:flex;
+  gap:12px;
+}
+
+.thumb{
+  width:80px;
+  height:80px;
+  border-radius:12px;
+  object-fit:cover;
+  flex-shrink:0;
+}
+
+.card-info{
+  flex:1;
+}
+
+.name{
+  font-weight:700;
+  font-size:1.1rem;
+}
+
+.badges{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:4px;
+}
+
+.badge{
+  font-size:.75rem;
+  padding:2px 8px;
+  border-radius:999px;
+  background:#eee;
+  color:#333;
+}
+
+.badge.distance{
+  background:#e7f1ff;
+  color:#0d6efd;
+}
+
+.desc{
+  margin:10px 0 4px;
+  font-size:.9rem;
+  color:#333;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.hours{
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.actions a{
+  text-decoration:none;
+  text-align:center;
+  padding:10px;
+  border-radius:10px;
+  font-size:.9rem;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+}
+
+.btn-call{
+  border:1px solid var(--primary);
+  color:var(--primary);
+}
+
+.btn-wa{
+  background:var(--success);
+  color:#fff;
+}
+
+.btn-map{
+  border:1px solid var(--secondary);
+  color:var(--secondary);
+}
+
+.skeleton{
+  height:120px;
+  background:linear-gradient(90deg,#eee,#f5f5f5,#eee);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:var(--radius);
+  margin-bottom:16px;
+}
+
+@keyframes shimmer{
+  0%{background-position:0%}
+  100%{background-position:200%}
+}
+
+.empty{
+  text-align:center;
+  padding:40px 16px;
+  color:var(--muted);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-row">
+    <div class="brand">
+      <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
+      <span data-ar="دليل برج النصر" data-en="Al Nasr Tower Directory">دليل برج النصر</span>
+    </div>
+    <button class="lang-btn" id="langBtn">EN</button>
+  </div>
+  <div class="search-box">
+    <input id="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة">
+  </div>
+</header>
+
+<main id="list"></main>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
+const CACHE_KEY = "alnasr_data_v1";
+const TTL = 60*60*1000;
+const DEFAULT_IMG = "https://i.postimg.cc/fyqVj003/s001.webp";
+
+const list = document.getElementById('list');
+const search = document.getElementById('search');
+const langBtn = document.getElementById('langBtn');
+
+let shops=[], userPos=null;
+let lang = localStorage.getItem('lang') || 'ar';
+applyLang();
+
+function applyLang(){
+  document.documentElement.dir = lang==='ar'?'rtl':'ltr';
+  document.documentElement.lang = lang;
+  langBtn.textContent = lang==='ar'?'EN':'AR';
+  document.querySelectorAll('[data-ar]').forEach(el=>{
+    el.textContent = el.dataset[lang];
+  });
+}
+
+langBtn.onclick=()=>{
+  lang = lang==='ar'?'en':'ar';
+  localStorage.setItem('lang',lang);
+  applyLang();
+  render(shops);
+};
+
+function skeleton(){
+  list.innerHTML='';
+  for(let i=0;i<5;i++){
+    const s=document.createElement('div');
+    s.className='skeleton';
+    list.appendChild(s);
+  }
+}
+
+function haversine(lat1,lng1,lat2,lng2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLng/2)**2;
+  return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
+}
+
+function render(data){
+  list.innerHTML='';
+  if(!data.length){
+    list.innerHTML='<div class="empty">لا توجد نتائج</div>';
+    return;
+  }
+  data.forEach(s=>{
+    const img = s.image || DEFAULT_IMG;
+    let distanceBadge='';
+    if(userPos && s.lat && s.lng){
+      const d=haversine(userPos.lat,userPos.lng,s.lat,s.lng);
+      distanceBadge=`<span class="badge distance">${d} كم</span>`;
+    }
+    const card=document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <div class="card-top">
+        <img class="thumb" loading="lazy" src="${img}">
+        <div class="card-info">
+          <div class="name">${s.name}</div>
+          <div class="badges">
+            <span class="badge">${s.category}</span>
+            ${distanceBadge}
+          </div>
+        </div>
+      </div>
+      <div class="desc">${s.description||''}</div>
+      <div class="hours">${s.working_hours||''}</div>
+      <div class="actions">
+        <a class="btn-call" href="tel:${s.phone}">📞</a>
+        <a class="btn-wa" href="https://wa.me/2${s.whatsapp}" target="_blank">💬</a>
+        <a class="btn-map" href="https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}" target="_blank">📍</a>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+search.oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  render(shops.filter(s=>
+    (s.name+s.category+(s.description||'')+(s.working_hours||''))
+    .toLowerCase().includes(q)
+  ));
+};
+
+function load(){
+  const cached=localStorage.getItem(CACHE_KEY);
+  if(cached){
+    const c=JSON.parse(cached);
+    if(Date.now()-c.time<TTL){
+      shops=c.data.shops;
+      render(shops);
+      return;
+    }
+  }
+  skeleton();
+  fetch(API).then(r=>r.json()).then(data=>{
+    shops=data.shops||[];
+    localStorage.setItem(CACHE_KEY,JSON.stringify({time:Date.now(),data}));
+    render(shops);
+  });
+}
+
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    render(shops);
+  });
+}
+
+load();
+</script>
+
+</body
