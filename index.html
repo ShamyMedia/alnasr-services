@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>دليل خدمات برج النصر | أطباء، عيادات، ومراكز ادارية وتجارية</title>
   
   <meta name="description" content="الدليل الشامل لأطباء وخدمات برج النصر. ابحث عن التخصص، اعرف المواعيد، واتصل مباشرة أو تواصل عبر واتساب.">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0ea5e9">
 
- <!-- أيقونات -->
+ <!-- أيقونات (Favicons) -->
  <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
  <link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
  <link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
@@ -26,38 +26,31 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- الربط بملف الستايل -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
 
-<!-- الهيدر الثابت الذي طلبته -->
+<!-- الهيدر الثابت -->
 <header>
   <div class="header-row">
     <div class="brand">
-      <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
+      <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo" width="45" height="45">
       <div>
-        <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Directory">دليل خدمات برج النصر</span></h1>
-        <p><span data-ar="كل الخدمات في مكان واحد" data-en="All services in one place"></span></p>
+        <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Services Directory">دليل خدمات برج النصر</span></h1>
+        <p><span data-ar="كل الأنشطة والخدمات في مكان واحد" data-en="All activities and services in one place"></span></p>
       </div>
     </div>
-    <button class="lang-btn" id="langBtn">EN</button>
+    <button class="lang-btn" id="langBtn" aria-label="Toggle Language">EN</button>
+  </div>
+
+  <div class="search-box">
+    <input id="search" type="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة..." autocomplete="off">
   </div>
 </header>
 
-<!-- قسم البحث -->
-<div class="hero-search-area">
-  <div class="search-box">
-    <input id="search" placeholder="ابحث عن طبيب، تخصص، أو عيادة..." autocomplete="off">
-    <span class="search-icon">🔍</span>
-  </div>
-</div>
-
-<main>
-  <!-- حاوية الكروت (تم التأكد من الكلاس shops-grid) -->
-  <div id="list" class="shops-grid"></div>
-</main>
+<!-- حاوية النتائج -->
+<main id="list" class="shops-grid"></main>
 
 <script src="script.js"></script>
 
