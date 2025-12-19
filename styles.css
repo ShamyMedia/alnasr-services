@@ -1,8 +1,11 @@
 :root {
     --primary: #0ea5e9;
+    --primary-dark: #0284c7;
     --bg: #f8fafc;
     --text: #0f172a;
-    --text-light: #64748b;
+    --text-sec: #64748b;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --header-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,17 +14,19 @@ body {
     background-color: var(--bg);
     font-family: 'Cairo', sans-serif;
     color: var(--text);
-    direction: rtl;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* === تنسيق الهيدر الثابت === */
+/* --- Header Styling --- */
 header {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px); /* تأثير الزجاج */
+    box-shadow: var(--header-shadow);
+    padding: 12px 16px 16px;
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -35,87 +40,84 @@ header {
 
 .brand {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
 }
 
 .brand img {
     width: 42px;
     height: 42px;
+    object-fit: contain;
 }
 
 .brand h1 {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 800;
-    color: #0284c7;
+    color: var(--primary-dark);
     margin: 0;
     line-height: 1.2;
 }
 
 .brand p {
     font-size: 0.75rem;
-    color: var(--text-light);
-    margin: 0;
+    color: var(--text-sec);
+    margin: 2px 0 0 0;
 }
 
 .lang-btn {
     border: 1px solid #e2e8f0;
     background: #f1f5f9;
-    padding: 6px 12px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
     cursor: pointer;
     font-family: inherit;
     font-weight: 700;
+    color: var(--text);
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
 }
 
-/* === تنسيق البحث === */
-.hero-search-area {
-    background: linear-gradient(135deg, #0ea5e9, #0284c7);
-    padding: 20px 15px 40px;
-    text-align: center;
-}
+.lang-btn:active { transform: scale(0.95); }
 
 .search-box {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
+    margin-top: 14px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .search-box input {
     width: 100%;
-    padding: 14px 45px 14px 15px;
-    border-radius: 15px;
-    border: none;
-    font-size: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    font-size: 16px; /* يمنع التكبير التلقائي في آيفون */
     font-family: inherit;
+    background: #f8fafc;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.search-box .search-icon {
-    position: absolute;
-    right: 15px; /* سيتم عكسها بالجافاسكريبت للغة الإنجليزية */
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.5;
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
 }
 
-/* === تنسيق الشبكة والكروت (Grid System) === */
+/* --- Grid System --- */
 main {
+    padding: 20px 16px;
     max-width: 1200px;
-    margin: -25px auto 20px; /* سحب المحتوى للأعلى قليلاً */
-    padding: 0 15px;
-    position: relative;
-    z-index: 10;
+    margin: 0 auto;
+    min-height: 60vh;
 }
 
-/* هذا هو الجزء الذي كان مفقوداً ويسبب الشكل المكسور */
 .shops-grid {
     display: grid;
-    grid-template-columns: 1fr; /* للموبايل */
-    gap: 15px;
+    grid-template-columns: 1fr;
+    gap: 16px;
 }
 
-/* للشاشات الأكبر */
 @media (min-width: 640px) {
     .shops-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -123,29 +125,40 @@ main {
     .shops-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
+/* --- Card Design --- */
 .shop-card {
     background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 18px;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--card-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
 }
 
 .card-image-wrapper {
-    height: 160px;
+    width: 100%;
+    height: 170px;
     background: #f1f5f9;
+    position: relative;
+    overflow: hidden;
 }
 
 .shop-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: opacity 0.3s;
 }
 
 .card-content {
-    padding: 15px;
+    padding: 18px;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -155,65 +168,109 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    gap: 10px;
 }
 
 .shop-name {
     font-size: 1.15rem;
     font-weight: 800;
+    color: var(--text);
     margin: 0;
+    line-height: 1.4;
 }
 
 .category-badge {
     background: #e0f2fe;
-    color: #0284c7;
+    color: #0369a1;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.distance-badge {
+    font-size: 0.75rem;
+    color: #15803d;
+    background: #dcfce7;
     padding: 3px 8px;
     border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 700;
+    margin-top: 6px;
+    display: inline-block;
+    font-weight: 600;
 }
 
 .shop-description {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    margin-bottom: 15px;
+    font-size: 0.92rem;
+    color: var(--text-sec);
+    line-height: 1.6;
+    margin-bottom: 20px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* الأزرار */
+/* Actions */
 .card-actions {
     margin-top: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
 }
 
 .action-btn {
     text-decoration: none;
-    padding: 8px;
-    border-radius: 8px;
+    padding: 11px;
+    border-radius: 12px;
     text-align: center;
     font-size: 0.9rem;
     font-weight: 700;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
 }
 
-.btn-call { background: #e0f2fe; color: #0284c7; }
-.btn-wa { background: #dcfce7; color: #166534; }
+.btn-call { background: #f0f9ff; color: #0284c7; }
+.btn-call:hover { background: #e0f2fe; }
+
+.btn-wa { background: #dcfce7; color: #15803d; }
+.btn-wa:hover { background: #bbf7d0; }
+
 .btn-map { 
     grid-column: span 2; 
     background: #f8fafc; 
-    color: var(--text-light); 
-    border: 1px solid #cbd5e1; 
+    color: var(--text-sec); 
+    border: 1px solid #e2e8f0; 
 }
+.btn-map:hover { background: #f1f5f9; }
 
-/* Loading & Empty */
-.empty-state { text-align: center; padding: 40px; color: var(--text-light); }
-.skeleton { height: 300px; background: #fff; border-radius: 16px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%{opacity:1} 50%{opacity:0.6} 100%{opacity:1} }
+/* States */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-sec);
+}
+.empty-icon { font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5; }
+
+/* Skeleton */
+.skeleton {
+    height: 350px;
+    background: #fff;
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+}
+.skeleton::after {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, rgba(255,255,255, 0) 0, rgba(0,0,0, 0.03) 20%, rgba(0,0,0, 0.06) 60%, rgba(255,255,255, 0));
+    animation: shimmer 2s infinite;
+}
+@keyframes shimmer { 100% { transform: translateX(100%); } }
