@@ -1,94 +1,211 @@
+"use strict";
+
+/* ================= CONFIG ================= */
 const CONFIG = {
   API: "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec",
-  CACHE: "alnasr_prod_v5",
-  TTL: 3600000,
-  FALLBACK: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 170'%3E%3Crect width='300' height='170' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dy='.3em' font-size='30' fill='%23cbd5e1'%3E📷%3C/text%3E%3C/svg%3E"
+  CACHE_KEY: "alnasr_cache",
+  CACHE_SCHEMA: 1,
+  CACHE_TTL: 60 * 60 * 1000,
+  FALLBACK_IMG: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE3MCI+PC9zdmc+"
 };
 
+/* ================= I18N ================= */
 const I18N = {
-  ar:{call:"اتصال",wa:"واتساب",map:"الموقع",empty:"لا توجد نتائج",search:"ابحث...",all:"الكل",title:"دليل خدمات برج النصر",desc:"كل الخدمات في مكان واحد"},
-  en:{call:"Call",wa:"WhatsApp",map:"Location",empty:"No results",search:"Search...",all:"All",title:"Al Nasr Services",desc:"All services in one place"}
+  ar: {
+    title: "دليل خدمات برج النصر",
+    desc: "كل الخدمات في مكان واحد",
+    search: "ابحث...",
+    all: "الكل",
+    call: "اتصال",
+    wa: "واتساب",
+    map: "الموقع",
+    empty: "لا توجد نتائج"
+  },
+  en: {
+    title: "Al Nasr Services",
+    desc: "All services in one place",
+    search: "Search...",
+    all: "All",
+    call: "Call",
+    wa: "WhatsApp",
+    map: "Location",
+    empty: "No results"
+  }
 };
 
-const state = { data:[], lang:localStorage.getItem("lang")||"ar" };
+/* ================= HELPERS ================= */
+const escapeText = s =>
+  String(s ?? "").replace(/[&<>"]/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])
+  );
 
-const esc = t=>String(t||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
-const norm = t=>String(t||"").toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ىي]/g,"ي");
-const safeUrl = u=>/^(https?|tel|mailto):/i.test(String(u||"").trim())?u:"";
-const safePhone = p=>String(p||"").replace(/[^\d+]/g,"");
+const normalize = s =>
+  String(s ?? "")
+    .toLowerCase()
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/[ىي]/g, "ي");
 
-const list = document.getElementById("list");
-const search = document.getElementById("search");
-const filter = document.getElementById("categoryFilter");
+const cleanPhone = p =>
+  String(p ?? "").replace(/[^\d+]/g, "");
+
+const safeURL = url => {
+  if (!url) return "";
+  try {
+    const u = new URL(url, location.origin);
+    return ["http:", "https:", "tel:"].includes(u.protocol) ? u.href : "";
+  } catch {
+    return "";
+  }
+};
+
+const validCoords = (lat, lng) =>
+  Number.isFinite(lat) &&
+  Number.isFinite(lng) &&
+  lat >= -90 && lat <= 90 &&
+  lng >= -180 && lng <= 180;
+
+/* ================= STATE ================= */
+const state = {
+  lang: localStorage.getItem("lang") || "ar",
+  data: [],
+  filtered: []
+};
+
+/* ================= DOM ================= */
+const cardsEl = document.getElementById("cards");
+const searchInput = document.getElementById("searchInput");
+const categoryFilter = document.getElementById("categoryFilter");
 const langBtn = document.getElementById("langBtn");
 
-function updateUI(){
-  document.documentElement.dir = state.lang==="ar"?"rtl":"ltr";
-  document.documentElement.lang = state.lang;
-  langBtn.textContent = state.lang==="ar"?"EN":"AR";
-  search.placeholder = I18N[state.lang].search;
-  document.querySelectorAll("[data-key]").forEach(e=>e.textContent=I18N[state.lang][e.dataset.key]);
-  if(filter.options.length) filter.options[0].text = I18N[state.lang].all;
+/* ================= DATA ================= */
+function processData(raw) {
+  state.data = raw.map(item => {
+    const lat = parseFloat(item.lat);
+    const lng = parseFloat(item.lng);
+
+    return {
+      ...item,
+      lat: validCoords(lat, lng) ? lat : null,
+      lng: validCoords(lat, lng) ? lng : null,
+      _search: normalize(
+        `${item.name} ${item.category} ${item.description} ${item.address || ""} ${item.phone || ""}`
+      )
+    };
+  });
 }
 
-function populateFilter(){
-  const cats=[...new Set(state.data.map(i=>i.category).filter(Boolean))];
-  filter.innerHTML=`<option value="">${I18N[state.lang].all}</option>`+
-    cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
-}
+/* ================= RENDER ================= */
+function render() {
+  cardsEl.innerHTML = "";
 
-function render(){
-  list.innerHTML="";
-  const q=norm(search.value),cat=filter.value;
-  const res=state.data.filter(i=>(!q||i._s.includes(q))&&(!cat||i.category===cat));
-  if(!res.length){list.innerHTML=`<div class="empty-state">${I18N[state.lang].empty}</div>`;return;}
-  const f=document.createDocumentFragment();
-  res.forEach(s=>{
-    const img=safeUrl(s.image)||CONFIG.FALLBACK;
-    const card=document.createElement("article");
-    card.className="shop-card";
-    card.innerHTML=`
-      <div class="card-image-wrapper">
-        <img class="shop-image" src="${img}" onerror="this.src='${CONFIG.FALLBACK}'">
-      </div>
+  if (!state.filtered.length) {
+    cardsEl.innerHTML = `<div class="empty-state">${I18N[state.lang].empty}</div>`;
+    return;
+  }
+
+  const frag = document.createDocumentFragment();
+
+  state.filtered.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "shop-card";
+
+    const img = document.createElement("img");
+    img.className = "shop-image";
+    img.src = safeURL(item.image) || CONFIG.FALLBACK_IMG;
+    img.onerror = () => (img.src = CONFIG.FALLBACK_IMG);
+
+    const callLink = item.phone
+      ? `<a class="action-btn btn-call" href="tel:${cleanPhone(item.phone)}">${I18N[state.lang].call}</a>`
+      : "";
+
+    const waLink = item.whatsapp
+      ? `<a class="action-btn btn-wa" target="_blank" rel="noopener" href="https://wa.me/${cleanPhone(item.whatsapp)}">${I18N[state.lang].wa}</a>`
+      : "";
+
+    const mapLink =
+      item.lat && item.lng
+        ? `<a class="action-btn btn-map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}">${I18N[state.lang].map}</a>`
+        : "";
+
+    card.innerHTML = `
+      <div class="card-image-wrapper"></div>
       <div class="card-content">
         <div class="shop-header">
-          <h3 class="shop-name">${esc(s.name)}</h3>
-          <span class="category-badge">${esc(s.category)}</span>
+          <h3>${escapeText(item.name)}</h3>
+          <span class="category-badge">${escapeText(item.category)}</span>
         </div>
-        <div class="shop-description">${esc(s.description)}</div>
-        <div class="card-actions">
-          ${s.phone?`<a class="action-btn btn-call" href="tel:${safePhone(s.phone)}">📞 ${I18N[state.lang].call}</a>`:""}
-          ${s.whatsapp?`<a class="action-btn btn-wa" target="_blank" href="https://wa.me/${safePhone(s.whatsapp)}">💬 ${I18N[state.lang].wa}</a>`:""}
-          ${s.lat&&s.lng?`<a class="action-btn btn-map" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}">🗺️ ${I18N[state.lang].map}</a>`:""}
-        </div>
-      </div>`;
-    f.appendChild(card);
+        <p>${escapeText(item.description)}</p>
+        <div class="card-actions">${callLink}${waLink}${mapLink}</div>
+      </div>
+    `;
+
+    card.querySelector(".card-image-wrapper").appendChild(img);
+    frag.appendChild(card);
   });
-  list.appendChild(f);
+
+  cardsEl.appendChild(frag);
 }
 
-async function boot(){
-  updateUI();
-  const cache=localStorage.getItem(CONFIG.CACHE);
-  if(cache){
-    try{
-      const j=JSON.parse(cache);
-      if(Date.now()-j.t<CONFIG.TTL){
-        state.data=j.d;
-        populateFilter();render();return;
-      }
-    }catch{}
+/* ================= FILTER ================= */
+function applyFilter() {
+  const q = normalize(searchInput.value);
+  const cat = categoryFilter.value;
+
+  state.filtered = state.data.filter(item =>
+    (!q || item._search.includes(q)) &&
+    (!cat || item.category === cat)
+  );
+
+  render();
+}
+
+/* ================= INIT ================= */
+async function init() {
+  document.documentElement.lang = state.lang;
+  document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+
+  document.querySelectorAll("[data-i18n]").forEach(el =>
+    el.textContent = I18N[state.lang][el.dataset.i18n]
+  );
+
+  searchInput.placeholder = I18N[state.lang].search;
+
+  try {
+    const cached = JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY));
+    if (cached && cached.schema === CONFIG.CACHE_SCHEMA && Date.now() - cached.time < CONFIG.CACHE_TTL) {
+      processData(cached.data);
+    } else {
+      throw 0;
+    }
+  } catch {
+    const res = await fetch(CONFIG.API);
+    if (!res.ok) throw new Error("API Error");
+    const json = await res.json();
+    processData(json.data || json.shops || []);
+    localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({
+      schema: CONFIG.CACHE_SCHEMA,
+      time: Date.now(),
+      data: json.data || json.shops || []
+    }));
   }
-  const res=await fetch(CONFIG.API).then(r=>r.json());
-  const raw=res.shops||res.data||[];
-  state.data=raw.map(i=>({...i,_s:norm(`${i.name} ${i.category} ${i.description||""}`)}));
-  localStorage.setItem(CONFIG.CACHE,JSON.stringify({t:Date.now(),d:state.data}));
-  populateFilter();render();
+
+  const cats = [...new Set(state.data.map(i => i.category))];
+  categoryFilter.innerHTML =
+    `<option value="">${I18N[state.lang].all}</option>` +
+    cats.map(c => `<option value="${escapeText(c)}">${escapeText(c)}</option>`).join("");
+
+  state.filtered = state.data;
+  render();
 }
 
-search.oninput=render;
-filter.onchange=render;
-langBtn.onclick=()=>{state.lang=state.lang==="ar"?"en":"ar";localStorage.setItem("lang",state.lang);updateUI();populateFilter();render();};
+/* ================= EVENTS ================= */
+searchInput.addEventListener("input", applyFilter);
+categoryFilter.addEventListener("change", applyFilter);
+langBtn.onclick = () => {
+  state.lang = state.lang === "ar" ? "en" : "ar";
+  localStorage.setItem("lang", state.lang);
+  location.reload();
+};
 
-boot();
+init();
