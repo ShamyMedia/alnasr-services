@@ -1,206 +1,42 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>دليل الخدمات – برج النصر</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل خدمات برج النصر | أطباء، عيادات، ومراكز ادارية وتجارية</title>
+  
+  <meta name="description" content="الدليل الشامل لأطباء وخدمات برج النصر. ابحث عن التخصص، اعرف المواعيد، واتصل مباشرة أو تواصل عبر واتساب.">
+  <meta name="keywords" content="برج النصر, دليل أطباء, عيادات, حجز موعد, دليل طبي">
+  <meta property="og:title" content="دليل خدمات برج النصر">
+  <meta property="og:description" content="ابحث واتصل بأفضل الأطباء في برج النصر بسهولة.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0ea5e9">
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+ <!-- 1. أيقونة iPhone (Apple Touch Icon) - الحجم القياسي 180x180 -->
+<link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
 
-<style>
-:root{
-  --bg:#f4f7f6;
-  --card:#ffffff;
-  --primary:#0d6efd;
-  --secondary:#6c757d;
-  --success:#25D366;
-  --text:#212529;
-  --muted:#6c757d;
-  --radius:16px;
-  --pad:16px;
-}
+<!-- 2. أيقونة Android Chrome - الحجم الكبير 512x512 (لشاشة الترحيب) -->
+<link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
 
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:'Cairo',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
+<!-- 3. أيقونة Android Chrome - الحجم القياسي 192x192 -->
+<link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
 
-header{
-  position:sticky;
-  top:0;
-  z-index:10;
-  background:#fff;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-  padding:12px var(--pad);
-}
+<!-- 4. أيقونة المتصفح القياسية (Favicon) - الحجم المتوسط 32x32 -->
+<link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
 
-.header-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
+<!-- 5. أيقونة شريط العنوان (Shortcut Icon) - الحجم الصغير 16x16 -->
+<link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/d/19jyftxwMAaVWEI7FAGdGnGrIf9731m4V">
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:700;
-  font-size:1.1rem;
-}
+<!-- 6. أيقونة المتصفح الشاملة (Favicon.ico) - الحجم القياسي 48x48 -->
+<link rel="icon" type="image/x-icon" sizes="48x48" href="https://lh3.googleusercontent.com/d/1WlvuN1EUR5uwzDW3lWLaJ74mE5DKZKvQ">
 
-.brand img{
-  width:28px;
-  height:28px;
-}
-
-.lang-btn{
-  border:1px solid #ddd;
-  background:#fff;
-  padding:6px 10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.search-box{
-  margin-top:10px;
-}
-
-.search-box input{
-  width:100%;
-  padding:12px;
-  font-size:1rem;
-  border-radius:12px;
-  border:1px solid #ddd;
-}
-
-main{
-  padding:var(--pad);
-}
-
-.card{
-  background:var(--card);
-  border-radius:var(--radius);
-  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);
-  padding:var(--pad);
-  margin-bottom:16px;
-}
-
-.card-top{
-  display:flex;
-  gap:12px;
-}
-
-.thumb{
-  width:80px;
-  height:80px;
-  border-radius:12px;
-  object-fit:cover;
-  flex-shrink:0;
-}
-
-.card-info{
-  flex:1;
-}
-
-.name{
-  font-weight:700;
-  font-size:1.1rem;
-}
-
-.badges{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-  margin-top:4px;
-}
-
-.badge{
-  font-size:.75rem;
-  padding:2px 8px;
-  border-radius:999px;
-  background:#eee;
-  color:#333;
-}
-
-.badge.distance{
-  background:#e7f1ff;
-  color:#0d6efd;
-}
-
-.desc{
-  margin:10px 0 4px;
-  font-size:.9rem;
-  color:#333;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-
-.hours{
-  font-size:.8rem;
-  color:var(--muted);
-}
-
-.actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:12px;
-}
-
-.actions a{
-  text-decoration:none;
-  text-align:center;
-  padding:10px;
-  border-radius:10px;
-  font-size:.9rem;
-  min-height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-}
-
-.btn-call{
-  border:1px solid var(--primary);
-  color:var(--primary);
-}
-
-.btn-wa{
-  background:var(--success);
-  color:#fff;
-}
-
-.btn-map{
-  border:1px solid var(--secondary);
-  color:var(--secondary);
-}
-
-.skeleton{
-  height:120px;
-  background:linear-gradient(90deg,#eee,#f5f5f5,#eee);
-  background-size:200% 100%;
-  animation:shimmer 1.5s infinite;
-  border-radius:var(--radius);
-  margin-bottom:16px;
-}
-
-@keyframes shimmer{
-  0%{background-position:0%}
-  100%{background-position:200%}
-}
-
-.empty{
-  text-align:center;
-  padding:40px 16px;
-  color:var(--muted);
-}
-</style>
+<!-- تنسيق إضافي لأنظمة Windows -->
+<meta name="msapplication-TileColor" content="#0d6efd">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 
 <body>
@@ -209,10 +45,12 @@ main{
   <div class="header-row">
     <div class="brand">
       <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
-      <span data-ar="دليل برج النصر" data-en="Al Nasr Directory">دليل برج النصر</span>
-    </div>
+      <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Services Directory">دليل خدمات برج النصر</span></h1>
+       <p><span data-ar="كل الأنشطة والخدمات في مكان واحد" data-en="All activities and services in one place"></span></p>
+          </div>
     <button class="lang-btn" id="langBtn">EN</button>
   </div>
+
   <div class="search-box">
     <input id="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة">
   </div>
@@ -220,145 +58,6 @@ main{
 
 <main id="list"></main>
 
-<script>
-const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
-const CACHE_KEY = "alnasr_data_v1";
-const TTL = 60*60*1000;
-const DEFAULT_IMG = "https://i.postimg.cc/fyqVj003/s001.webp";
-
-const list = document.getElementById('list');
-const search = document.getElementById('search');
-const langBtn = document.getElementById('langBtn');
-
-let shops=[], userPos=null;
-let lang = localStorage.getItem('lang') || 'ar';
-
-// قاموس لترجمة النصوص الثابتة في الأزرار
-const i18n = {
-  ar: { call: "اتصال", wa: "واتساب", map: "الموقع", empty: "لا توجد نتائج", placeholder: "ابحث عن طبيب أو تخصص أو خدمة" },
-  en: { call: "Call", wa: "WhatsApp", map: "Map", empty: "No results", placeholder: "Search for doctors or services" }
-};
-
-function applyLang(){
-  document.documentElement.dir = lang==='ar'?'rtl':'ltr';
-  document.documentElement.lang = lang;
-  langBtn.textContent = lang==='ar'?'EN':'AR';
-  search.placeholder = i18n[lang].placeholder;
-  document.querySelectorAll('[data-ar]').forEach(el=>{
-    el.textContent = el.dataset[lang];
-  });
-}
-
-// دالة تنظيف البحث (عشان "عظام" تظهر لو بحثت بـ "عضام")
-function clean(t) {
-    if(!t) return "";
-    return t.toString().toLowerCase()
-    .replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي")
-    .replace(/[\u064B-\u0652]/g, "");
-}
-
-langBtn.onclick=()=>{
-  lang = lang==='ar'?'en':'ar';
-  localStorage.setItem('lang',lang);
-  applyLang();
-  render(shops);
-};
-
-function skeleton(){
-  list.innerHTML='';
-  for(let i=0;i<5;i++){
-    const s=document.createElement('div');
-    s.className='skeleton';
-    list.appendChild(s);
-  }
-}
-
-function haversine(lat1,lng1,lat2,lng2){
-  const R=6371;
-  const dLat=(lat2-lat1)*Math.PI/180;
-  const dLng=(lng2-lng1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+
-    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
-    Math.sin(dLng/2)**2;
-  return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
-}
-
-function render(data){
-  list.innerHTML='';
-  if(!data.length){
-    list.innerHTML=`<div class="empty">${i18n[lang].empty}</div>`;
-    return;
-  }
-  
-  data.forEach(s=>{
-    const img = s.image || DEFAULT_IMG;
-    let distanceBadge='';
-    if(userPos && s.lat && s.lng){
-      const d=haversine(userPos.lat,userPos.lng,s.lat,s.lng);
-      distanceBadge=`<span class="badge distance">${d} ${lang==='ar'?'كم':'km'}</span>`;
-    }
-
-    const card=document.createElement('div');
-    card.className='card';
-    card.innerHTML=`
-      <div class="card-top">
-        <img class="thumb" loading="lazy" src="${img}">
-        <div class="card-info">
-          <div class="name">${s.name}</div>
-          <div class="badges">
-            <span class="badge">${s.category}</span>
-            ${distanceBadge}
-          </div>
-        </div>
-      </div>
-      <div class="desc">${s.description||''}</div>
-      <div class="hours">${s.working_hours||''}</div>
-      <div class="actions">
-        <a class="btn-call" href="tel:${s.phone}">📞 <span>${i18n[lang].call}</span></a>
-        <a class="btn-wa" href="https://wa.me/2${s.whatsapp}" target="_blank">💬 <span>${i18n[lang].wa}</span></a>
-        <a class="btn-map" href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}" target="_blank">📍 <span>${i18n[lang].map}</span></a>
-      </div>
-    `;
-    list.appendChild(card);
-  });
-}
-
-search.oninput=e=>{
-  const q=clean(e.target.value);
-  render(shops.filter(s=>
-    clean(s.name + s.category + (s.description||"")).includes(q)
-  ));
-};
-
-function load(){
-  applyLang();
-  const cached=localStorage.getItem(CACHE_KEY);
-  if(cached){
-    const c=JSON.parse(cached);
-    if(Date.now()-c.time<TTL){
-      shops=c.data.shops;
-      render(shops);
-      return;
-    }
-  }
-  skeleton();
-  fetch(API).then(r=>r.json()).then(data=>{
-    shops=data.shops||[];
-    localStorage.setItem(CACHE_KEY,JSON.stringify({time:Date.now(),data}));
-    render(shops);
-  });
-}
-
-if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    userPos={lat:pos.coords.latitude,lng:pos.coords.longitude};
-    render(shops);
-  }, () => load());
-} else {
-  load();
-}
-
-load();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
