@@ -14,7 +14,7 @@ const I18N = {
   ar: {
     title: "دليل خدمات برج النصر",
     desc: "كل الخدمات في مكان واحد",
-    search: "ابحث عن الاطباء والأنشطة التجارية داخل برج النصر",
+    search: "ابحث...",
     all: "الكل",
     call: "اتصال",
     wa: "واتساب",
@@ -24,7 +24,7 @@ const I18N = {
   en: {
     title: "Al Nasr Services",
     desc: "All services in one place",
-    search: "Search doctors and all services in alnasr tower",
+    search: "Search...",
     all: "All",
     call: "Call",
     wa: "WhatsApp",
@@ -209,4 +209,3 @@ langBtn.onclick = () => {
 };
 
 init();
-
