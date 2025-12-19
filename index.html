@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -27,23 +29,39 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <div class="main-header-wrapper">
   <div class="sticky-top-bar">
     <div class="header-row">
-      <a href="#" class="brand">
-        <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
-        <div class="brand-text">
-          <h1><span data-txt="brand_title">دليل خدمات برج النصر</span></h1>
-          <p><span data-txt="brand_desc">كل الأنشطة والخدمات في مكان واحد</span></p>
+      <a class="brand">
+        <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="Logo">
+        <div>
+          <h1 data-i18n="title"></h1>
+          <p data-i18n="desc"></p>
         </div>
       </a>
-      <!-- Improved a11y: aria-label added -->
-      <button class="lang-btn" id="langBtn" aria-label="Switch Language">EN</button>
+      <button id="langBtn" class="lang-btn">EN</button>
     </div>
   </div>
+
+  <div class="header-search-area">
+    <div class="search-container">
+      <div class="filter-group">
+        <select id="categoryFilter" class="filter-select"></select>
+        <span class="filter-arrow">▼</span>
+      </div>
+      <input id="searchInput" class="search-input">
+    </div>
+  </div>
+</div>
+
+<main id="cards"></main>
+
+<script src="script.js" defer></script>
+</body>
+</html>
+
 
   <div class="header-search-area">
     <div class="search-container">
@@ -63,4 +81,5 @@
 <!-- Script -->
 <script src="script.js" defer></script>
 </body>
+
 </html>
