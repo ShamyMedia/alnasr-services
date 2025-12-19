@@ -7,49 +7,44 @@
   <meta name="theme-color" content="#0ea5e9">
   <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
 
-  <!-- Security Headers (Simulation) -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <!-- Security Headers (CSP) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com;">
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="دليل خدمات برج النصر">
-  <meta property="og:description" content="ابحث عن أقرب طبيب، صيدلية، أو خدمة في برج النصر بسهولة.">
-  
-    <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <div class="main-header-wrapper">
   <div class="sticky-top-bar">
     <div class="header-row">
-      <a class="brand">
+      <a href="#" class="brand">
         <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="Logo">
-        <div>
-          <h1 data-i18n="title"></h1>
-          <p data-i18n="desc"></p>
+        <div class="brand-text">
+          <h1><span data-key="title">دليل خدمات برج النصر</span></h1>
+          <p><span data-key="desc">كل الأنشطة والخدمات في مكان واحد</span></p>
         </div>
       </a>
-      <button id="langBtn" class="lang-btn">EN</button>
+      <button id="langBtn" class="lang-btn" aria-label="Switch Language">EN</button>
     </div>
   </div>
 
   <div class="header-search-area">
     <div class="search-container">
       <div class="filter-group">
-        <select id="categoryFilter" class="filter-select"></select>
+        <select id="categoryFilter" class="filter-select" aria-label="Category Filter"></select>
         <span class="filter-arrow">▼</span>
       </div>
-      <input id="searchInput" class="search-input">
+      <input id="search" class="search-input" type="search" placeholder="ابحث..." autocomplete="off">
     </div>
   </div>
 </div>
 
-<main id="cards"></main>
+<main id="list" aria-live="polite"></main>
 
 <script src="script.js" defer></script>
 </body>
 </html>
-
-
-
-
