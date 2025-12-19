@@ -30,6 +30,26 @@ const CAT_MAP = {
   "Store": "متجر", "Office": "مكتب", "Restaurant": "مطعم", "Cafe": "كافيه", "Gym": "جيم"
 };
 
+const ICONS = {
+  call: `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.62 2.6a2 2 0 0 1-.45 2.11L9 10a16 16 0 0 0 5 5l.57-.28a2 2 0 0 1 2.11.45c.83.29 1.7.5 2.6.62A2 2 0 0 1 22 16.92z"/>
+    </svg>
+  `,
+  wa: `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M20.52 3.48A11.91 11.91 0 0 0 12.03 0C5.41 0 .03 5.38.03 12a11.9 11.9 0 0 0 1.64 6L0 24l6.2-1.62A12 12 0 0 0 24 12c0-3.2-1.25-6.21-3.48-8.52z"/>
+    </svg>
+  `,
+  map: `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 10c0 5-9 13-9 13S3 15 3 10a9 9 0 1 1 18 0z"/>
+      <circle cx="12" cy="10" r="3"/>
+    </svg>
+  `
+};
+
+
 const state = { 
   data: [], 
   lang: localStorage.getItem("lang") || "ar"
@@ -140,7 +160,8 @@ function createCard(s) {
   // Helper to create buttons (Enabled or Disabled)
   const createBtn = (typeClass, textKey, href, isActive) => {
     const a = document.createElement('a');
-    a.textContent = I18N[state.lang][textKey]; // النص مترجم
+   a.innerHTML = `${ICONS[textKey]} <span>${I18N[state.lang][textKey]}</span>`;
+ // النص مترجم
     
     if (isActive && href) {
       a.className = `action-btn ${typeClass}`; // كلاس اللون النشط
