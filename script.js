@@ -1,5 +1,5 @@
 const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
-const CACHE_KEY = "alnasr_fixed_grid_v2";
+const CACHE_KEY = "alnasr_secure_v4";
 const TTL = 60 * 60 * 1000;
 
 const list = document.getElementById("list");
@@ -11,12 +11,22 @@ let userPos = null;
 let lang = localStorage.getItem("lang") || "ar";
 
 const i18n = {
-  ar: { call: "اتصال", wa: "واتساب", map: "الموقع", empty: "لا توجد نتائج", search: "ابحث عن طبيب أو تخصص..." },
-  en: { call: "Call", wa: "WhatsApp", map: "Map", empty: "No results", search: "Search doctor or service..." }
+  ar: { call: "اتصال", wa: "واتساب", map: "الموقع", empty: "عفواً، لا توجد نتائج مطابقة", search: "ابحث عن طبيب أو تخصص أو خدمة..." },
+  en: { call: "Call", wa: "WhatsApp", map: "Map", empty: "No results found", search: "Search doctor or service..." }
 };
 
+// 1. تحسين الأمان: دالة لتعقيم النصوص ومنع الأكواد الخبيثة
+function safeHTML(str) {
+  if (!str) return "";
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 function normalize(text="") {
-  return text.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ىي]/g,"ي").replace(/[\u064B-\u0652]/g,"");
+  return text.toLowerCase()
+    .replace(/[أإآ]/g,"ا").replace(/ة/g,"ه")
+    .replace(/[ىي]/g,"ي").replace(/[\u064B-\u0652]/g,"");
 }
 
 function getWaLink(num) {
@@ -32,12 +42,6 @@ function applyLang(){
   document.documentElement.lang = lang;
   langBtn.textContent = lang==="ar"?"EN":"AR";
   searchInput.placeholder = i18n[lang].search;
-  
-  // ضبط أيقونة البحث
-  const icon = document.querySelector('.search-icon');
-  if(icon) icon.style.right = lang==="ar" ? "15px" : "auto";
-  if(icon) icon.style.left = lang==="ar" ? "auto" : "15px";
-
   document.querySelectorAll("[data-ar]").forEach(el=>{
     el.textContent = el.dataset[lang];
   });
@@ -52,10 +56,11 @@ langBtn.onclick = ()=>{
 
 function skeleton(){
   list.innerHTML = "";
-  // استخدام نفس الكلاس للشبكة
-  list.className = "shops-grid";
-  for(let i=0;i<4;i++){
-    list.innerHTML += `<div class="skeleton"></div>`;
+  // رسم 6 كروت وهمية
+  for(let i=0;i<6;i++){
+    const div = document.createElement("div");
+    div.className = "shop-card skeleton";
+    list.appendChild(div);
   }
 }
 
@@ -73,38 +78,37 @@ function render(data){
   list.innerHTML="";
   
   if(!data.length){
-    list.className = ""; // إزالة الشبكة عند عدم وجود نتائج لعرض الرسالة في المنتصف
-    list.innerHTML=`<div class="empty-state">❌ ${i18n[lang].empty}</div>`;
+    list.innerHTML=`<div class="empty-state"><span class="empty-icon">🔍</span>${i18n[lang].empty}</div>`;
     return;
   }
-  
-  // إعادة تفعيل الشبكة
-  list.className = "shops-grid";
 
-  const ph = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='40' fill='%23cbd5e1'%3E🏥%3C/text%3E%3C/svg%3E`;
+  // استخدام Fragment لتحسين الأداء (Reflow مرة واحدة)
+  const fragment = document.createDocumentFragment();
+  const ph = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='170'%3E%3Crect width='300' height='170' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='30' fill='%23cbd5e1'%3E🏥%3C/text%3E%3C/svg%3E`;
 
   data.forEach(s=>{
-    let distText = "";
+    let distHtml = "";
     if(userPos && s.lat && s.lng){
-      distText = ` | 📍 ${distance(userPos.lat,userPos.lng,s.lat,s.lng)} km`;
+      distHtml = `<div class="distance-badge">📍 ${distance(userPos.lat,userPos.lng,s.lat,s.lng)} km</div>`;
     }
 
     const card = document.createElement("article");
-    card.className = "shop-card"; // هذا الكلاس مطابق للـ CSS الآن
+    card.className = "shop-card";
     
+    // استخدام safeHTML للحماية
     card.innerHTML = `
       <div class="card-image-wrapper">
-        <img class="shop-image" loading="lazy" src="${s.image||ph}" onerror="this.src='${ph}'">
+        <img class="shop-image" loading="lazy" src="${s.image||ph}" onerror="this.src='${ph}'" alt="${safeHTML(s.name)}">
       </div>
       <div class="card-content">
         <div class="shop-header">
           <div>
-            <h3 class="shop-name">${s.name}</h3>
-            <small style="color:#64748b; font-size:0.8rem">${distText}</small>
+            <h3 class="shop-name">${safeHTML(s.name)}</h3>
+            ${distHtml}
           </div>
-          <span class="category-badge">${s.category}</span>
+          <span class="category-badge">${safeHTML(s.category)}</span>
         </div>
-        <p class="shop-description">${s.description||""}</p>
+        <p class="shop-description">${safeHTML(s.description||"")}</p>
         <div class="card-actions">
           <a href="tel:${s.phone}" class="action-btn btn-call">📞 ${i18n[lang].call}</a>
           <a href="https://wa.me/${getWaLink(s.whatsapp)}" target="_blank" class="action-btn btn-wa">💬 ${i18n[lang].wa}</a>
@@ -112,15 +116,22 @@ function render(data){
         </div>
       </div>
     `;
-    list.appendChild(card);
+    fragment.appendChild(card);
   });
+  
+  list.appendChild(fragment);
 }
 
+// 2. تحسين البحث: إضافة تأخير بسيط (Debounce) لمنع اللاق
+let timeout = null;
 searchInput.oninput = e => {
-  const q = normalize(e.target.value);
-  render(services.filter(s =>
-    normalize(s.name + s.category + (s.description || "")).includes(q)
-  ));
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    const q = normalize(e.target.value);
+    render(services.filter(s =>
+      normalize(s.name + s.category + (s.description || "")).includes(q)
+    ));
+  }, 150); // انتظار 150 ملي ثانية
 };
 
 async function load(){
@@ -128,11 +139,14 @@ async function load(){
   skeleton();
   
   const cached = localStorage.getItem(CACHE_KEY);
+  let loadedFromCache = false;
+
   if(cached){
     const c = JSON.parse(cached);
     if(Date.now() - c.time < TTL){
       services = c.data;
       render(services);
+      loadedFromCache = true;
     }
   }
 
@@ -141,9 +155,14 @@ async function load(){
     const json = await res.json();
     services = json.shops || [];
     localStorage.setItem(CACHE_KEY, JSON.stringify({time: Date.now(), data: services}));
-    render(services);
+    // إعادة الرسم فقط إذا كانت البيانات مختلفة أو لم يتم التحميل من الكاش
+    if(!loadedFromCache || JSON.stringify(services) !== JSON.stringify(JSON.parse(cached).data)) {
+        render(services);
+    }
   } catch(e) {
-    if(!services.length) list.innerHTML = `<div class="empty-state">⚠️ خطأ في الاتصال</div>`;
+    if(!loadedFromCache && services.length === 0) {
+        list.innerHTML = `<div class="empty-state">⚠️ تأكد من الاتصال بالإنترنت</div>`;
+    }
   }
 }
 
