@@ -56,8 +56,27 @@
   </div>
 </header>
 
-<main id="list"></main>
+  <!-- منطقة العنوان والبحث (Hero Section) -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2 class="hero-title" data-ar="كل الخدمات في مكان واحد" data-en="All Services in One Place"></h2>
+      <p class="hero-subtitle" data-ar="ابحث عن طبيب، تخصص، أو خدمة بسهولة" data-en="Find a doctor, specialty, or service easily"></p>
+    </div>
+  </section>
 
-<script src="script.js"></script>
+  <main>
+    <!-- صندوق البحث بنفس ستايل الفلاتر القديم -->
+    <section class="filters">
+      <div class="search-wrapper">
+        <input type="text" class="search-input" id="search" placeholder="ابحث عن طبيب أو تخصص..." autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+    </section>
+
+    <!-- شبكة الكروت -->
+    <div class="shops-grid" id="list"></div>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
