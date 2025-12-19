@@ -1,5 +1,5 @@
 const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
-const CACHE_KEY = "alnasr_final_merged";
+const CACHE_KEY = "alnasr_fixed_grid_v2";
 const TTL = 60 * 60 * 1000;
 
 const list = document.getElementById("list");
@@ -10,30 +10,15 @@ let services = [];
 let userPos = null;
 let lang = localStorage.getItem("lang") || "ar";
 
-// النصوص
 const i18n = {
-  ar: { 
-    call: "اتصال", wa: "واتساب", map: "الموقع", 
-    empty: "لا توجد نتائج مطابقة لبحثك", 
-    search: "ابحث عن طبيب أو تخصص...",
-    loading: "جاري التحميل..."
-  },
-  en: { 
-    call: "Call", wa: "WhatsApp", map: "Map", 
-    empty: "No matching results found", 
-    search: "Search for doctor or specialty...",
-    loading: "Loading..."
-  }
+  ar: { call: "اتصال", wa: "واتساب", map: "الموقع", empty: "لا توجد نتائج", search: "ابحث عن طبيب أو تخصص..." },
+  en: { call: "Call", wa: "WhatsApp", map: "Map", empty: "No results", search: "Search doctor or service..." }
 };
 
-// دالة تنظيف النصوص للبحث
 function normalize(text="") {
-  return text.toLowerCase()
-    .replace(/[أإآ]/g,"ا").replace(/ة/g,"ه")
-    .replace(/[ىي]/g,"ي").replace(/[\u064B-\u0652]/g,"");
+  return text.toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ىي]/g,"ي").replace(/[\u064B-\u0652]/g,"");
 }
 
-// معالجة رقم الواتساب
 function getWaLink(num) {
   if(!num) return "";
   let n = num.toString().replace(/\D/g,'');
@@ -42,20 +27,22 @@ function getWaLink(num) {
   return n.startsWith("2") ? n : "2" + n;
 }
 
-// تطبيق اللغة
 function applyLang(){
   document.documentElement.dir = lang==="ar"?"rtl":"ltr";
   document.documentElement.lang = lang;
   langBtn.textContent = lang==="ar"?"EN":"AR";
   searchInput.placeholder = i18n[lang].search;
   
-  // تحديث النصوص الثابتة
+  // ضبط أيقونة البحث
+  const icon = document.querySelector('.search-icon');
+  if(icon) icon.style.right = lang==="ar" ? "15px" : "auto";
+  if(icon) icon.style.left = lang==="ar" ? "auto" : "15px";
+
   document.querySelectorAll("[data-ar]").forEach(el=>{
     el.textContent = el.dataset[lang];
   });
 }
 
-// زر تبديل اللغة
 langBtn.onclick = ()=>{
   lang = lang==="ar"?"en":"ar";
   localStorage.setItem("lang",lang);
@@ -63,17 +50,15 @@ langBtn.onclick = ()=>{
   render(services);
 };
 
-// تأثير التحميل (Skeleton)
 function skeleton(){
   list.innerHTML = "";
-  for(let i=0;i<6;i++){
-    const s = document.createElement("div");
-    s.className = "skeleton";
-    list.appendChild(s);
+  // استخدام نفس الكلاس للشبكة
+  list.className = "shops-grid";
+  for(let i=0;i<4;i++){
+    list.innerHTML += `<div class="skeleton"></div>`;
   }
 }
 
-// حساب المسافة
 function distance(lat1,lng1,lat2,lng2){
   const R=6371;
   const dLat=(lat2-lat1)*Math.PI/180;
@@ -84,39 +69,40 @@ function distance(lat1,lng1,lat2,lng2){
   return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
 }
 
-// دالة العرض (Render) - تستخدم HTML التصميم القديم
 function render(data){
   list.innerHTML="";
+  
   if(!data.length){
+    list.className = ""; // إزالة الشبكة عند عدم وجود نتائج لعرض الرسالة في المنتصف
     list.innerHTML=`<div class="empty-state">❌ ${i18n[lang].empty}</div>`;
     return;
   }
+  
+  // إعادة تفعيل الشبكة
+  list.className = "shops-grid";
 
-  // Placeholder Image
-  const ph = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='180'%3E%3Crect width='400' height='180' fill='%23eee'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='40' fill='%23ccc'%3E🏥%3C/text%3E%3C/svg%3E`;
+  const ph = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200'%3E%3Crect width='400' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='40' fill='%23cbd5e1'%3E🏥%3C/text%3E%3C/svg%3E`;
 
   data.forEach(s=>{
-    let distBadge="";
+    let distText = "";
     if(userPos && s.lat && s.lng){
-      const km = distance(userPos.lat,userPos.lng,s.lat,s.lng);
-      distBadge = `<span class="category-badge distance-badge">📍 ${km} km</span>`;
+      distText = ` | 📍 ${distance(userPos.lat,userPos.lng,s.lat,s.lng)} km`;
     }
 
     const card = document.createElement("article");
-    card.className = "shop-card"; // نفس كلاس التصميم القديم
+    card.className = "shop-card"; // هذا الكلاس مطابق للـ CSS الآن
     
-    // بناء الهيكل الداخلي للكارت كما كان في التصميم القديم
     card.innerHTML = `
       <div class="card-image-wrapper">
-        <img src="${s.image || ph}" class="shop-image" loading="lazy">
+        <img class="shop-image" loading="lazy" src="${s.image||ph}" onerror="this.src='${ph}'">
       </div>
       <div class="card-content">
         <div class="shop-header">
-          <h3 class="shop-name">${s.name}</h3>
-          <div class="shop-meta">
-            <span class="category-badge">${s.category}</span>
-            ${distBadge}
+          <div>
+            <h3 class="shop-name">${s.name}</h3>
+            <small style="color:#64748b; font-size:0.8rem">${distText}</small>
           </div>
+          <span class="category-badge">${s.category}</span>
         </div>
         <p class="shop-description">${s.description||""}</p>
         <div class="card-actions">
@@ -130,7 +116,6 @@ function render(data){
   });
 }
 
-// البحث
 searchInput.oninput = e => {
   const q = normalize(e.target.value);
   render(services.filter(s =>
@@ -138,9 +123,9 @@ searchInput.oninput = e => {
   ));
 };
 
-// التحميل الرئيسي
 async function load(){
   applyLang();
+  skeleton();
   
   const cached = localStorage.getItem(CACHE_KEY);
   if(cached){
@@ -148,11 +133,7 @@ async function load(){
     if(Date.now() - c.time < TTL){
       services = c.data;
       render(services);
-    } else {
-      skeleton(); // Cache expired
     }
-  } else {
-    skeleton(); // No cache
   }
 
   try {
@@ -162,20 +143,15 @@ async function load(){
     localStorage.setItem(CACHE_KEY, JSON.stringify({time: Date.now(), data: services}));
     render(services);
   } catch(e) {
-    console.error("Error:", e);
-    if(services.length === 0) list.innerHTML = `<div class="empty-state">⚠️ حدث خطأ في الاتصال</div>`;
+    if(!services.length) list.innerHTML = `<div class="empty-state">⚠️ خطأ في الاتصال</div>`;
   }
 }
 
-// طلب الموقع الجغرافي
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    p => {
-      userPos = { lat: p.coords.latitude, lng: p.coords.longitude };
-      if(services.length > 0) render(services);
-    },
-    err => console.log("GPS Denied")
-  );
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(p=>{
+    userPos = {lat: p.coords.latitude, lng: p.coords.longitude};
+    if(services.length) render(services);
+  });
 }
 
 load();
