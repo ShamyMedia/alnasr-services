@@ -15,17 +15,7 @@
   <meta property="og:title" content="دليل خدمات برج النصر">
   <meta property="og:description" content="ابحث عن أقرب طبيب، صيدلية، أو خدمة في برج النصر بسهولة.">
   
-  <!-- Icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
-  <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -43,23 +33,16 @@
     </div>
   </div>
 
- <div class="header-search-area">
+  <div class="header-search-area">
     <div class="search-container">
       <div class="filter-group">
-        <!-- Improved a11y: label and aria -->
-        <label for="categoryFilter" class="sr-only">Filter by Category</label>
         <select id="categoryFilter" class="filter-select"></select>
-        <span class="filter-arrow" aria-hidden="true">▼</span>
+        <span class="filter-arrow">▼</span>
       </div>
-      <div class="search-input-group">
-        <!-- Improved a11y: label -->
-        <label for="search" class="sr-only">Search Services</label>
-      <input id="search" class="search-input" placeholder="ابحث عن الاطباء والأنشطة التجارية داخل برج النصر" autocomplete="off">
-      </div>
+      <input id="searchInput" class="search-input">
     </div>
   </div>
 </div>
-
 
 <main id="cards"></main>
 
@@ -67,12 +50,6 @@
 </body>
 </html>
 
-<main id="list"></main>
 
-<!-- Script -->
-<script src="script.js" defer></script>
-</body>
-
-</html>
 
 
