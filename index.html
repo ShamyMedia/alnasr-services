@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,46 +12,449 @@
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0ea5e9">
 
- <!-- أيقونات (Favicons) -->
- <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
- <link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
- <link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
- <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
- <link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/d/19jyftxwMAaVWEI7FAGdGnGrIf9731m4V">
- <link rel="icon" type="image/x-icon" sizes="48x48" href="https://lh3.googleusercontent.com/d/1WlvuN1EUR5uwzDW3lWLaJ74mE5DKZKvQ">
- <meta name="msapplication-TileColor" content="#0d6efd">
+  <!-- الأيقونات كما طلبت -->
+  <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
+  <link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/d/19jyftxwMAaVWEI7FAGdGnGrIf9731m4V">
+  <link rel="icon" type="image/x-icon" sizes="48x48" href="https://lh3.googleusercontent.com/d/1WlvuN1EUR5uwzDW3lWLaJ74mE5DKZKvQ">
+  <meta name="msapplication-TileColor" content="#0d6efd">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0284c7;
+      --bg: #f8fafc;
+      --text: #0f172a;
+      --text-sec: #64748b;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'Cairo', sans-serif;
+      color: var(--text);
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: 20px;
+    }
+
+    /* --- تنسيق الهيدر --- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      padding: 10px 16px 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    .brand h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      font-size: 0.75rem;
+      color: var(--text-sec);
+      margin: 2px 0 0 0;
+    }
+
+    .lang-btn {
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--text);
+      transition: 0.2s;
+    }
+
+    .search-box {
+      margin-top: 14px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      font-size: 16px; /* مهم جداً للموبايل */
+      font-family: inherit;
+      background: #f8fafc;
+      transition: 0.3s;
+      appearance: none;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    }
+
+    /* --- تنسيق الشبكة (Grid) --- */
+    main {
+      max-width: 1200px;
+      margin: 20px auto 0;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) { main { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { main { grid-template-columns: repeat(3, 1fr); } }
+
+    /* --- تنسيق الكارت --- */
+    .shop-card {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+
+    .shop-card:hover { transform: translateY(-3px); }
+
+    .card-image-wrapper {
+      width: 100%;
+      height: 160px;
+      background: #f1f5f9;
+      position: relative;
+    }
+
+    .shop-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .shop-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .category-badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .distance-badge {
+      font-size: 0.75rem;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    .shop-description {
+      font-size: 0.9rem;
+      color: var(--text-sec);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .action-btn {
+      text-decoration: none;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-call { background: #f0f9ff; color: #0284c7; }
+    .btn-wa { background: #dcfce7; color: #15803d; }
+    .btn-map { grid-column: span 2; background: #f8fafc; color: var(--text-sec); border: 1px solid #e2e8f0; }
+
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-sec); }
+    
+    .skeleton {
+      height: 320px;
+      background: #fff;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(0,0,0,0.04) 20%, rgba(0,0,0,0.08) 60%, rgba(255,255,255,0));
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer { 100% { transform: translateX(100%); } }
+  </style>
 </head>
 
 <body>
 
-<!-- الهيدر الثابت -->
 <header>
   <div class="header-row">
     <div class="brand">
-      <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo" width="45" height="45">
+      <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
       <div>
         <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Services Directory">دليل خدمات برج النصر</span></h1>
         <p><span data-ar="كل الأنشطة والخدمات في مكان واحد" data-en="All activities and services in one place"></span></p>
       </div>
     </div>
-    <button class="lang-btn" id="langBtn" aria-label="Toggle Language">EN</button>
+    <button class="lang-btn" id="langBtn">EN</button>
   </div>
 
   <div class="search-box">
-    <input id="search" type="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة..." autocomplete="off">
+    <input id="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة">
   </div>
 </header>
 
-<!-- حاوية النتائج -->
-<main id="list" class="shops-grid"></main>
+<main id="list"></main>
 
-<script src="script.js"></script>
+<script>
+const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
+const CACHE_KEY = "alnasr_v10_final";
+const TTL = 60 * 60 * 1000;
+
+const list = document.getElementById("list");
+const searchInput = document.getElementById("search");
+const langBtn = document.getElementById("langBtn");
+
+let services = [];
+let userPos = null;
+let lang = localStorage.getItem("lang") || "ar";
+
+const i18n = {
+  ar: { call: "اتصال", wa: "واتساب", map: "الموقع", empty: "لا توجد نتائج", search: "ابحث عن طبيب أو تخصص أو خدمة" },
+  en: { call: "Call", wa: "WhatsApp", map: "Map", empty: "No results found", search: "Search doctor or service" }
+};
+
+// حماية من الأكواد الخبيثة
+function escapeHTML(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function normalize(text="") {
+  return text.toLowerCase()
+    .replace(/[أإآ]/g,"ا").replace(/ة/g,"ه")
+    .replace(/[ىي]/g,"ي").replace(/[\u064B-\u0652]/g,"");
+}
+
+function getWaLink(num) {
+  if(!num) return "";
+  let n = num.toString().replace(/\D/g,'');
+  if(n.startsWith("01")) return "2" + n.substring(1);
+  if(n.startsWith("1")) return "20" + n;
+  return n.startsWith("2") ? n : "2" + n;
+}
+
+function applyLang(){
+  document.documentElement.dir = lang==="ar"?"rtl":"ltr";
+  document.documentElement.lang = lang;
+  langBtn.textContent = lang==="ar"?"EN":"AR";
+  searchInput.placeholder = i18n[lang].search;
+  document.querySelectorAll("[data-ar]").forEach(el=>{
+    el.textContent = el.dataset[lang];
+  });
+}
+
+langBtn.onclick = ()=>{
+  lang = lang==="ar"?"en":"ar";
+  localStorage.setItem("lang",lang);
+  applyLang();
+  render(services);
+};
+
+function skeleton(){
+  list.innerHTML = "";
+  for(let i=0;i<6;i++){
+    const div = document.createElement("div");
+    div.className = "skeleton";
+    list.appendChild(div);
+  }
+}
+
+function distance(lat1,lng1,lat2,lng2){
+  const R=6371;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLng/2)**2;
+  return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
+}
+
+function render(data){
+  list.innerHTML="";
+  if(!data.length){
+    list.innerHTML=`<div class="empty-state">🔍 ${i18n[lang].empty}</div>`;
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  const ph = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='160'%3E%3Crect width='300' height='160' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-size='30' fill='%23cbd5e1'%3E🏥%3C/text%3E%3C/svg%3E`;
+
+  data.forEach(s=>{
+    let distHtml = "";
+    if(userPos && s.lat && s.lng){
+      distHtml = `<div class="distance-badge">📍 ${distance(userPos.lat,userPos.lng,s.lat,s.lng)} km</div>`;
+    }
+
+    const card = document.createElement("article");
+    card.className = "shop-card";
+    
+    card.innerHTML = `
+      <div class="card-image-wrapper">
+        <img class="shop-image" loading="lazy" src="${s.image||ph}" onerror="this.src='${ph}'" alt="${escapeHTML(s.name)}">
+      </div>
+      <div class="card-content">
+        <div class="shop-header">
+          <div>
+            <h3 class="shop-name">${escapeHTML(s.name)}</h3>
+            ${distHtml}
+          </div>
+          <span class="category-badge">${escapeHTML(s.category)}</span>
+        </div>
+        <p class="shop-description">${escapeHTML(s.description||"")}</p>
+        <div class="card-actions">
+          <a href="tel:${s.phone}" class="action-btn btn-call">📞 ${i18n[lang].call}</a>
+          <a href="https://wa.me/${getWaLink(s.whatsapp)}" target="_blank" class="action-btn btn-wa">💬 ${i18n[lang].wa}</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}" target="_blank" class="action-btn btn-map">🗺️ ${i18n[lang].map}</a>
+        </div>
+      </div>
+    `;
+    fragment.appendChild(card);
+  });
+  list.appendChild(fragment);
+}
+
+let timeout;
+searchInput.oninput = e => {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    const q = normalize(e.target.value);
+    render(services.filter(s =>
+      normalize(s.name + s.category + (s.description || "")).includes(q)
+    ));
+  }, 100);
+};
+
+async function load(){
+  applyLang();
+  skeleton();
+  
+  const cached = localStorage.getItem(CACHE_KEY);
+  let hasData = false;
+  if(cached){
+    const c = JSON.parse(cached);
+    if(Date.now() - c.time < TTL){
+      services = c.data;
+      render(services);
+      hasData = true;
+    }
+  }
+
+  try {
+    const res = await fetch(API);
+    const json = await res.json();
+    services = json.shops || [];
+    localStorage.setItem(CACHE_KEY, JSON.stringify({time: Date.now(), data: services}));
+    if(!hasData || services.length !== JSON.parse(cached||'{}').data?.length){
+      render(services);
+    }
+  } catch(e) {
+    if(!hasData) list.innerHTML = `<div class="empty-state">⚠️ تأكد من الاتصال بالإنترنت</div>`;
+  }
+}
+
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(p=>{
+    userPos = {lat: p.coords.latitude, lng: p.coords.longitude};
+    if(services.length) render(services);
+  });
+}
+
+load();
+</script>
 
 </body>
 </html>
