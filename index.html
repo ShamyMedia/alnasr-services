@@ -43,15 +43,19 @@
     </div>
   </div>
 
-<div class="header-search-area">
+ <div class="header-search-area">
     <div class="search-container">
       <div class="filter-group">
-        <select id="categoryFilter" class="filter-select">
-          <option value="">الكل</option>
-        </select>
-        <span class="filter-arrow">▼</span>
+        <!-- Improved a11y: label and aria -->
+        <label for="categoryFilter" class="sr-only">Filter by Category</label>
+        <select id="categoryFilter" class="filter-select"></select>
+        <span class="filter-arrow" aria-hidden="true">▼</span>
       </div>
-      <input id="search" class="search-input" placeholder="ابحث عن الاطباء والأنشطة التجارية داخل برج النصر">
+      <div class="search-input-group">
+        <!-- Improved a11y: label -->
+        <label for="search" class="sr-only">Search Services</label>
+      <input id="search" class="search-input" placeholder="ابحث عن الاطباء والأنشطة التجارية داخل برج النصر" autocomplete="off">
+      </div>
     </div>
   </div>
 </div>
@@ -70,4 +74,5 @@
 </body>
 
 </html>
+
 
