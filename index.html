@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دليل خدمات برج النصر | أطباء، عيادات، ومراكز ادارية وتجارية</title>
+  <title>دليل خدمات برج النصر | أطباء، عيادات، ومراكز ادارية وتجارية</title>
   
   <meta name="description" content="الدليل الشامل لأطباء وخدمات برج النصر. ابحث عن التخصص، اعرف المواعيد، واتصل مباشرة أو تواصل عبر واتساب.">
   <meta name="keywords" content="برج النصر, دليل أطباء, عيادات, حجز موعد, دليل طبي">
@@ -12,71 +13,53 @@
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#0ea5e9">
 
- <!-- 1. أيقونة iPhone (Apple Touch Icon) - الحجم القياسي 180x180 -->
-<link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
+ <!-- أيقونات -->
+ <link rel="apple-touch-icon" sizes="180x180" href="https://lh3.googleusercontent.com/d/156h4MqUoWEWW6ixD9ZT-_CMFOceWvP3y">
+ <link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
+ <link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
+ <link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
+ <link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/d/19jyftxwMAaVWEI7FAGdGnGrIf9731m4V">
+ <link rel="icon" type="image/x-icon" sizes="48x48" href="https://lh3.googleusercontent.com/d/1WlvuN1EUR5uwzDW3lWLaJ74mE5DKZKvQ">
+ <meta name="msapplication-TileColor" content="#0d6efd">
 
-<!-- 2. أيقونة Android Chrome - الحجم الكبير 512x512 (لشاشة الترحيب) -->
-<link rel="icon" type="image/png" sizes="512x512" href="https://lh3.googleusercontent.com/d/1uvqZyn_qs4KMBt-wgU_g_3rWO7bA8z8q">
-
-<!-- 3. أيقونة Android Chrome - الحجم القياسي 192x192 -->
-<link rel="icon" type="image/png" sizes="192x192" href="https://lh3.googleusercontent.com/d/1FlDlZq82dVNy0-JFA7Gw-didaRzeSBmC">
-
-<!-- 4. أيقونة المتصفح القياسية (Favicon) - الحجم المتوسط 32x32 -->
-<link rel="icon" type="image/png" sizes="32x32" href="https://lh3.googleusercontent.com/d/1fBCoflveVaIQdqXoH7GY5SP_ke7KONDa">
-
-<!-- 5. أيقونة شريط العنوان (Shortcut Icon) - الحجم الصغير 16x16 -->
-<link rel="icon" type="image/png" sizes="16x16" href="https://lh3.googleusercontent.com/d/19jyftxwMAaVWEI7FAGdGnGrIf9731m4V">
-
-<!-- 6. أيقونة المتصفح الشاملة (Favicon.ico) - الحجم القياسي 48x48 -->
-<link rel="icon" type="image/x-icon" sizes="48x48" href="https://lh3.googleusercontent.com/d/1WlvuN1EUR5uwzDW3lWLaJ74mE5DKZKvQ">
-
-<!-- تنسيق إضافي لأنظمة Windows -->
-<meta name="msapplication-TileColor" content="#0d6efd">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="assets/style.css">
+  <!-- الربط بملف الستايل -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<!-- الهيدر الثابت الذي طلبته -->
 <header>
   <div class="header-row">
     <div class="brand">
       <img src="https://i.postimg.cc/fyqVj003/s001.webp" alt="logo">
-      <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Services Directory">دليل خدمات برج النصر</span></h1>
-       <p><span data-ar="كل الأنشطة والخدمات في مكان واحد" data-en="All activities and services in one place"></span></p>
-          </div>
+      <div>
+        <h1><span data-ar="دليل خدمات برج النصر" data-en="Al Nasr Directory">دليل خدمات برج النصر</span></h1>
+        <p><span data-ar="كل الخدمات في مكان واحد" data-en="All services in one place"></span></p>
+      </div>
+    </div>
     <button class="lang-btn" id="langBtn">EN</button>
-  </div>
-
-  <div class="search-box">
-    <input id="search" placeholder="ابحث عن طبيب أو تخصص أو خدمة">
   </div>
 </header>
 
-  <!-- منطقة العنوان والبحث (Hero Section) -->
-  <section class="hero">
-    <div class="hero-content">
-      <h2 class="hero-title" data-ar="كل الخدمات في مكان واحد" data-en="All Services in One Place"></h2>
-      <p class="hero-subtitle" data-ar="ابحث عن طبيب، تخصص، أو خدمة بسهولة" data-en="Find a doctor, specialty, or service easily"></p>
-    </div>
-  </section>
+<!-- قسم البحث -->
+<div class="hero-search-area">
+  <div class="search-box">
+    <input id="search" placeholder="ابحث عن طبيب، تخصص، أو عيادة..." autocomplete="off">
+    <span class="search-icon">🔍</span>
+  </div>
+</div>
 
-  <main>
-    <!-- صندوق البحث بنفس ستايل الفلاتر القديم -->
-    <section class="filters">
-      <div class="search-wrapper">
-        <input type="text" class="search-input" id="search" placeholder="ابحث عن طبيب أو تخصص..." autocomplete="off">
-        <span class="search-icon">🔍</span>
-      </div>
-    </section>
+<main>
+  <!-- حاوية الكروت (تم التأكد من الكلاس shops-grid) -->
+  <div id="list" class="shops-grid"></div>
+</main>
 
-    <!-- شبكة الكروت -->
-    <div class="shops-grid" id="list"></div>
-  </main>
+<script src="script.js"></script>
 
-  <script src="script.js"></script>
 </body>
 </html>
