@@ -2,26 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>دليل خدمات برج النصر</title>
 
-  <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
-  <meta property="og:type" content="website">
+  <meta name="description" content="الدليل الشامل الموثوق للخدمات والأنشطة التجارية في برج النصر.">
   <meta property="og:title" content="دليل خدمات برج النصر">
-  <meta property="og:description" content="ابحث عن أقرب طبيب، صيدلية، أو خدمة في برج النصر بسهولة.">
-  <meta property="og:image" content="https://googleusercontent.com/profile/picture/4">
+  <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
 
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'self'; 
-                 img-src 'self' https: data: http://googleusercontent.com https://googleusercontent.com; 
-                 script-src 'self'; 
+                 img-src 'self' https: data: blob: http://googleusercontent.com; 
+                 script-src 'self' 'unsafe-inline'; 
                  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                  font-src https://fonts.gstatic.com; 
                  connect-src 'self' https://script.google.com https://script.googleusercontent.com;">
 
-  <link rel="apple-touch-icon" href="https://googleusercontent.com/profile/picture/4">
-  <link rel="icon" type="image/png" href="https://googleusercontent.com/profile/picture/4">
-
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -31,25 +27,31 @@
 
 <header class="header">
   <div class="header-inner">
+    
     <div class="brand">
-      <img src="https://googleusercontent.com/profile/picture/4" alt="لوجو برج النصر" class="brand-icon" width="56" height="56" loading="eager">
       <div class="brand-text">
-        <h1 id="pageTitle">دليل خدمات برج النصر</h1>
-        <p id="pageDesc">كل الخدمات في مكان واحد</p>
+        <h1>دليل خدمات برج النصر</h1>
+        <p>كل الأنشطة والخدمات في مكان واحد</p>
+      </div>
+      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="برج النصر" class="brand-icon" width="48" height="48" crossorigin="anonymous">
+    </div>
+
+    <div class="search-wrapper">
+      <div class="search-box">
+        <select id="categoryFilter" aria-label="التصنيف"></select>
+        <div class="divider"></div>
+        <input id="search" type="search" placeholder="ابحث عن طبيب، تخصص، رقم..." autocomplete="off">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
       </div>
     </div>
-    <button id="langBtn" class="lang-btn">English</button>
-  </div>
 
-  <div class="search-wrapper">
-    <div class="search-box">
-      <select id="categoryFilter" aria-label="التصنيف"></select>
-      <input id="search" type="search" placeholder="ابحث عن خدمة..." autocomplete="off">
-    </div>
+    <button id="langBtn" class="lang-btn">EN</button>
   </div>
 </header>
 
-<main id="list" aria-live="polite"></main>
+<main id="list"></main>
 
 <script src="script.js" defer></script>
 </body>
