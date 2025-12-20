@@ -2,56 +2,64 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>دليل خدمات برج النصر</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="الدليل الشامل الموثوق للخدمات والأنشطة التجارية في برج النصر.">
+  <title>دليل خدمات برج النصر</title>
+  <meta name="description" content="دليل محلي يجمع كل الخدمات والأنشطة داخل برج النصر، وصول سريع وتواصل مباشر بدون تسجيل.">
+
+  <!-- Open Graph -->
   <meta property="og:title" content="دليل خدمات برج النصر">
+  <meta property="og:description" content="كل الخدمات القريبة منك داخل برج النصر في مكان واحد.">
   <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
 
-  <meta http-equiv="Content-Security-Policy" 
-        content="default-src 'self'; 
-                 img-src 'self' https: data: blob: http://googleusercontent.com; 
-                 script-src 'self' 'unsafe-inline'; 
-                 style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
-                 font-src https://fonts.gstatic.com; 
-                 connect-src 'self' https://script.google.com https://script.googleusercontent.com;">
+  <!-- CSP -->
+  <meta http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      img-src 'self' https: data:;
+      script-src 'self';
+      style-src 'self' https://fonts.googleapis.com;
+      font-src https://fonts.gstatic.com;
+      connect-src https://script.google.com https://script.googleusercontent.com;
+    ">
 
-  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
+  <link rel="icon" href="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <header class="header">
   <div class="header-inner">
-    
     <div class="brand">
+      <img class="brand-icon" src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="برج النصر">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
-        <p>كل الأنشطة والخدمات في مكان واحد</p>
+        <p>خدمات قريبة • تواصل مباشر • بدون تسجيل</p>
       </div>
-      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="برج النصر" class="brand-icon" width="48" height="48" crossorigin="anonymous">
     </div>
 
     <div class="search-wrapper">
       <div class="search-box">
         <select id="categoryFilter" aria-label="التصنيف"></select>
-        <div class="divider"></div>
-        <input id="search" type="search" placeholder="ابحث عن طبيب، تخصص، رقم..." autocomplete="off">
-        <span class="search-icon">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </span>
+        <span class="divider"></span>
+        <input id="search" type="search" placeholder="ابحث عن خدمة أو نشاط..." autocomplete="off">
       </div>
     </div>
-
-    <button id="langBtn" class="lang-btn">EN</button>
   </div>
 </header>
 
-<main id="list"></main>
+<main id="list">
+  <div class="loading">جاري تحميل الخدمات…</div>
+</main>
+
+<footer class="footer">
+  منصة دليل محلي • نسخة مخصصة لمنطقة واحدة
+</footer>
 
 <script src="script.js" defer></script>
 </body>
