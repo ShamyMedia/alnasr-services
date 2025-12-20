@@ -2,21 +2,20 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>دليل خدمات برج النصر</title>
-  <meta name="description" content="دليل محلي يجمع كل الخدمات والأنشطة داخل برج النصر، وصول سريع وتواصل مباشر بدون تسجيل.">
 
-  <!-- Open Graph -->
+  <!-- SEO -->
+  <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
   <meta property="og:title" content="دليل خدمات برج النصر">
-  <meta property="og:description" content="كل الخدمات القريبة منك داخل برج النصر في مكان واحد.">
+  <meta property="og:description" content="كل الأنشطة والخدمات في مكان واحد">
   <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
 
-  <!-- CSP -->
+  <!-- CSP (آمن بدون كسر التصميم) -->
   <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
-      img-src 'self' https: data:;
+      img-src 'self' https://lh3.googleusercontent.com data:;
       script-src 'self';
       style-src 'self' https://fonts.googleapis.com;
       font-src https://fonts.gstatic.com;
@@ -35,30 +34,37 @@
 
 <header class="header">
   <div class="header-inner">
+
     <div class="brand">
-      <img class="brand-icon" src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="برج النصر">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
-        <p>خدمات قريبة • تواصل مباشر • بدون تسجيل</p>
+        <p>كل الأنشطة والخدمات في مكان واحد</p>
       </div>
+      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke"
+           alt="برج النصر"
+           class="brand-icon"
+           width="48"
+           height="48"
+           loading="eager">
     </div>
 
     <div class="search-wrapper">
       <div class="search-box">
         <select id="categoryFilter" aria-label="التصنيف"></select>
-        <span class="divider"></span>
-        <input id="search" type="search" placeholder="ابحث عن خدمة أو نشاط..." autocomplete="off">
+        <div class="divider"></div>
+        <input id="search" type="search" placeholder="ابحث عن طبيب، تخصص، رقم..." autocomplete="off">
       </div>
     </div>
+
+    <button id="langBtn" class="lang-btn">EN</button>
+
   </div>
 </header>
 
-<main id="list">
-  <div class="loading">جاري تحميل الخدمات…</div>
-</main>
+<main id="list"></main>
 
 <footer class="footer">
-  منصة دليل محلي • نسخة مخصصة لمنطقة واحدة
+لدليل الشامل والموثوق لكل الخدمات، الاطباء، والأنشطة التجارية في منطقة برج النصر. اعثر على أرقام الهواتف، العناوين، وتواصل مباشرة.
 </footer>
 
 <script src="script.js" defer></script>
