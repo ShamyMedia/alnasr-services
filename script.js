@@ -1,74 +1,128 @@
 "use strict";
 
 const API = "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec";
-const state = { lang: localStorage.getItem("lang") || "ar", data: [] };
 
-const normalize = t => String(t || "").toLowerCase().replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي");
+const state = { data: [] };
 
-function render() {
-  const list = document.getElementById("list");
-  const q = normalize(document.getElementById("search").value);
-  const c = document.getElementById("categoryFilter").value;
-  
+const list = document.getElementById("list");
+const search = document.getElementById("search");
+const filter = document.getElementById("categoryFilter");
+
+const normalize = t =>
+  String(t || "")
+    .toLowerCase()
+    .replace(/[أإآ]/g,"ا")
+    .replace(/ة/g,"ه")
+    .replace(/[ىي]/g,"ي");
+
+function createCard(i){
+  const card = document.createElement("article");
+  card.className = "shop-card";
+
+  const imgWrap = document.createElement("div");
+  imgWrap.className = "card-img";
+
+  const img = document.createElement("img");
+  img.loading = "lazy";
+  img.src = i.image || "https://placehold.co/600x338?text=No+Image";
+  img.onerror = () => img.src = "https://placehold.co/600x338?text=No+Image";
+  imgWrap.appendChild(img);
+
+  const body = document.createElement("div");
+  body.className = "card-body";
+
+  const h3 = document.createElement("h3");
+  h3.textContent = i.name;
+
+  const p = document.createElement("p");
+  p.textContent = i.description || "";
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  if(i.phone){
+    const a = document.createElement("a");
+    a.href = `tel:${i.phone}`;
+    a.className = "action-btn btn-call";
+    a.textContent = "اتصال";
+    actions.appendChild(a);
+  } else {
+    const s = document.createElement("span");
+    s.className = "action-btn btn-disabled";
+    s.textContent = "غير متوفر";
+    actions.appendChild(s);
+  }
+
+  if(i.whatsapp){
+    const w = document.createElement("a");
+    w.href = `https://wa.me/${i.whatsapp}`;
+    w.target = "_blank";
+    w.rel = "noopener noreferrer";
+    w.className = "action-btn btn-wa";
+    w.textContent = "واتساب";
+    actions.appendChild(w);
+  } else {
+    const s = document.createElement("span");
+    s.className = "action-btn btn-disabled";
+    s.textContent = "غير متوفر";
+    actions.appendChild(s);
+  }
+
+  body.append(h3,p,actions);
+  card.append(imgWrap,body);
+  return card;
+}
+
+function render(){
+  const q = normalize(search.value);
+  const c = filter.value;
   list.innerHTML = "";
-  const filtered = state.data.filter(i => (!c || i.category === c) && (!q || i._s.includes(q)));
-  
-  if(!filtered.length) {
-    list.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 50px; color: #94a3b8;'>لا توجد نتائج تطابق بحثك</div>";
+
+  const items = state.data.filter(i =>
+    (!c || i.category === c) &&
+    (!q || i._s.includes(q))
+  );
+
+  if(!items.length){
+    list.innerHTML = `<div class="loading">لا توجد نتائج — جرّب كلمة مختلفة</div>`;
     return;
   }
 
   const frag = document.createDocumentFragment();
-  filtered.forEach(i => {
-    const card = document.createElement("article");
-    card.className = "shop-card";
-    card.innerHTML = `
-      <div class="card-img"><img src="${i.image || ''}" loading="lazy" onerror="this.src='https://placehold.co/400x200/f1f5f9/64748b?text=Image'"></div>
-      <div class="card-body">
-        <div class="card-title">${i.name}</div>
-        <div class="card-desc">${i.description || ''}</div>
-        <div class="actions">
-          <a href="tel:${i.phone}" class="action-btn btn-call">اتصال</a>
-          <a href="https://wa.me/2${String(i.whatsapp).replace(/\D/g,'')}" target="_blank" class="action-btn btn-wa">واتساب</a>
-        </div>
-      </div>
-    `;
-    frag.appendChild(card);
-  });
+  items.forEach(i => frag.appendChild(createCard(i)));
   list.appendChild(frag);
 }
 
-async function boot() {
-  try {
-    const r = await fetch(API);
-    const j = await r.json();
-    state.data = (j.shops || []).map(i => ({
-      ...i,
-      _s: normalize(`${i.name} ${i.description || ""} ${i.category || ""}`)
-    }));
-    
-    // تحديث قائمة التصنيفات
-    const filter = document.getElementById("categoryFilter");
-    const cats = [...new Set(state.data.map(i => i.category).filter(Boolean))].sort();
-    filter.innerHTML = '<option value="">الكل</option>';
-    cats.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = opt.textContent = c;
-      filter.appendChild(opt);
-    });
-    
-    render();
-  } catch (e) {
-    document.getElementById("list").innerHTML = "فشل تحميل البيانات. يرجى المحاولة لاحقاً.";
-  }
+function debounce(fn,delay){
+  let t;
+  return (...args)=>{
+    clearTimeout(t);
+    t = setTimeout(()=>fn(...args),delay);
+  };
 }
 
-document.getElementById("search").oninput = render;
-document.getElementById("categoryFilter").onchange = render;
-document.getElementById("langBtn").onclick = () => {
-  state.lang = state.lang === "ar" ? "en" : "ar";
-  localStorage.setItem("lang", state.lang);
-  location.reload();
-};
+async function boot(){
+  const r = await fetch(API);
+  const j = await r.json();
 
+  state.data = (j.shops || []).map(i => ({
+    ...i,
+    phone: i.phone?.replace(/\D/g,""),
+    whatsapp: i.whatsapp?.replace(/\D/g,""),
+    _s: normalize(`${i.name} ${i.description} ${i.category}`)
+  }));
+
+  const cats = [...new Set(state.data.map(i=>i.category).filter(Boolean))];
+  filter.innerHTML = `<option value="">الكل</option>`;
+  cats.forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c;o.textContent=c;
+    filter.appendChild(o);
+  });
+
+  render();
+}
+
+search.addEventListener("input",debounce(render,200));
+filter.addEventListener("change",render);
 boot();
