@@ -1,6 +1,6 @@
 /**
  * 🏛️ AL-NASR DIRECTORY APP
- * Security + Performance Hardened
+ * Security + UX + Stability – FINAL
  */
 
 const CONFIG = {
@@ -51,8 +51,7 @@ let state = {
   lang: localStorage.getItem("lang") || "ar"
 };
 
-/* ================= Utilities ================= */
-
+/* Utilities */
 const safeText = v => String(v ?? "").trim();
 const norm = t =>
   safeText(t)
@@ -61,10 +60,7 @@ const norm = t =>
     .replace(/ة/g, "ه")
     .replace(/[ىي]/g, "ي");
 
-const safeUrl = url => {
-  const u = safeText(url);
-  return /^(https?:|tel:)/i.test(u) ? u : "";
-};
+const safeUrl = u => /^(https?:|tel:)/i.test(u) ? u : "";
 
 const formatWa = n => {
   const p = safeText(n).replace(/\D/g, "");
@@ -74,8 +70,7 @@ const formatWa = n => {
 const getCatDisplay = c =>
   state.lang === "ar" && CAT_MAP[c] ? CAT_MAP[c] : c;
 
-/* ================= DOM ================= */
-
+/* DOM */
 const DOM = {
   list: document.getElementById("list"),
   search: document.getElementById("search"),
@@ -83,8 +78,7 @@ const DOM = {
   langBtn: document.getElementById("langBtn")
 };
 
-/* ================= Data ================= */
-
+/* Data */
 const processData = raw =>
   Array.isArray(raw)
     ? raw.map(i => ({
@@ -102,12 +96,86 @@ const processData = raw =>
       }))
     : [];
 
-/* ================= Render ================= */
+/* 🔴 الدالة الناقصة (السبب في المشكلة) */
+function createCard(s) {
+  const card = document.createElement("article");
+  card.className = "shop-card";
 
+  const imgWrap = document.createElement("div");
+  imgWrap.className = "card-image-wrapper";
+
+  const img = document.createElement("img");
+  img.className = "shop-image";
+  img.loading = "lazy";
+  img.src = safeUrl(s.image) || CONFIG.FALLBACK_IMG;
+  img.onload = () => img.classList.add("loaded");
+  img.onerror = () => {
+    img.src = CONFIG.FALLBACK_IMG;
+    img.classList.add("loaded");
+  };
+
+  imgWrap.appendChild(img);
+
+  const content = document.createElement("div");
+  content.className = "card-content";
+
+  const header = document.createElement("div");
+  header.className = "shop-header";
+
+  const name = document.createElement("h3");
+  name.className = "shop-name";
+  name.textContent = s.name;
+
+  const badge = document.createElement("span");
+  badge.className = "category-badge";
+  badge.textContent = getCatDisplay(s.category);
+
+  header.append(name, badge);
+
+  const desc = document.createElement("div");
+  desc.className = "shop-description";
+  desc.textContent = s.description;
+
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const btn = (cls, label, href) => {
+    const a = document.createElement("a");
+    a.className = `action-btn ${cls}`;
+    a.textContent = label;
+    if (href) {
+      a.href = href;
+      if (!href.startsWith("tel:")) {
+        a.target = "_blank";
+        a.rel = "noopener";
+      }
+    } else {
+      a.classList.add("btn-disabled");
+    }
+    return a;
+  };
+
+  actions.append(
+    btn("btn-call", I18N[state.lang].call, s.phone ? `tel:${s.phone}` : null),
+    btn("btn-wa", I18N[state.lang].wa, s.whatsapp ? `https://wa.me/${formatWa(s.whatsapp)}` : null),
+    btn(
+      "btn-map",
+      I18N[state.lang].map,
+      s.lat && s.lng
+        ? `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`
+        : null
+    )
+  );
+
+  content.append(header, desc, actions);
+  card.append(imgWrap, content);
+  return card;
+}
+
+/* Render */
 function render() {
   const q = norm(DOM.search.value).split(" ").filter(Boolean);
   const cat = DOM.filter.value;
-
   DOM.list.innerHTML = "";
 
   const results = state.data.filter(i => {
@@ -125,8 +193,7 @@ function render() {
   DOM.list.appendChild(frag);
 }
 
-/* ================= UI ================= */
-
+/* UI */
 function updateUI() {
   document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
   DOM.langBtn.textContent = state.lang === "ar" ? "EN" : "AR";
@@ -142,24 +209,19 @@ function updateUI() {
   });
 }
 
-/* ================= Fetch ================= */
-
+/* Fetch */
 async function fetchData() {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT);
-
+  const t = setTimeout(() => ctrl.abort(), CONFIG.TIMEOUT);
   const res = await fetch(CONFIG.API, { signal: ctrl.signal });
-  clearTimeout(timer);
-
+  clearTimeout(t);
   if (!res.ok) throw new Error("API");
   return res.json();
 }
 
-/* ================= Boot ================= */
-
+/* Boot */
 async function boot() {
   updateUI();
-
   try {
     const cache = JSON.parse(localStorage.getItem(CONFIG.CACHE_KEY) || "{}");
     if (cache.t && Date.now() - cache.t < CONFIG.TTL) {
@@ -167,9 +229,7 @@ async function boot() {
       render();
       return;
     }
-  } catch {
-    localStorage.removeItem(CONFIG.CACHE_KEY);
-  }
+  } catch {}
 
   try {
     const json = await fetchData();
@@ -183,8 +243,7 @@ async function boot() {
   }
 }
 
-/* ================= Events ================= */
-
+/* Events */
 let searchTimer;
 DOM.search.addEventListener("input", () => {
   clearTimeout(searchTimer);
