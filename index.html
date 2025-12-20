@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>دليل خدمات برج النصر</title>
 
   <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
+
   <meta property="og:title" content="دليل خدمات برج النصر">
   <meta property="og:description" content="كل الأنشطة والخدمات في مكان واحد">
   <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
   <meta property="og:type" content="website">
 
+  <!-- CSP Hardened (Ready for future nonces if needed) -->
   <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
@@ -19,15 +22,19 @@
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src https://fonts.gstatic.com;
       connect-src 'self' https://script.google.com https://script.googleusercontent.com;
+      base-uri 'self';
+      form-action 'none';
     ">
 
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
-  
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -43,7 +50,9 @@
   <div class="banner-inner">
 
     <div class="banner-brand">
-      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="شعار برج النصر" class="banner-logo">
+      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke"
+           alt="شعار برج النصر"
+           class="banner-logo">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
         <p>كل الأنشطة والخدمات في مكان واحد</p>
@@ -51,13 +60,9 @@
     </div>
 
     <div class="banner-search">
-      <select id="categoryFilter" aria-label="اختر القسم"></select> <div class="search-input-wrap">
-        <input
-          id="search"
-          type="search"
-          placeholder="ابحث عن طبيب، تخصص، رقم…"
-          autocomplete="off"
-        >
+      <select id="categoryFilter" aria-label="اختر القسم"></select>
+      <div class="search-input-wrap">
+        <input id="search" type="search" autocomplete="off">
         <span class="search-ico">🔍</span>
       </div>
     </div>
