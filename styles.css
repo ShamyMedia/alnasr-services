@@ -1,139 +1,136 @@
-:root{
-  --bg:#f8fafc;
-  --text:#0f172a;
-  --muted:#94a3b8;
-  --primary:#0ea5e9;
-  --radius:14px;
+:root {
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --text-sec: #64748b;
+  --primary: #0284c7;
+  --accent: #0ea5e9;
+  --card-bg: #ffffff;
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-*{box-sizing:border-box;margin:0;padding:0}
+* { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
 
-body{
-  font-family:"Cairo",sans-serif;
-  background:var(--bg);
-  color:var(--text);
+body {
+  background: var(--bg);
+  font-family: 'Cairo', sans-serif;
+  color: var(--text);
+  display: flex; flex-direction: column; min-height: 100vh;
 }
 
-/* Header */
-.header{
-  position:sticky;
-  top:0;
-  background:linear-gradient(135deg,#a5f3fc,#0ea5e9);
-  box-shadow:0 4px 16px rgba(0,0,0,.08);
-  z-index:1000;
+/* --- Banner (Header) --- */
+.banner {
+  background: linear-gradient(135deg, #0891b2, #0284c7);
+  padding: 15px 0 30px; /* مساحة إضافية من الأسفل لجمالية التصميم */
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 4px 20px rgba(2,132,199,0.2);
+  color: white;
 }
 
-.header-inner{
-  max-width:1200px;
-  margin:auto;
-  padding:14px;
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  align-items:center;
+.banner-inner {
+  max-width: 1200px; margin: auto; padding: 0 20px;
+  display: flex; flex-direction: column; gap: 20px;
 }
 
-.brand{
-  display:flex;
-  gap:10px;
-  align-items:center;
+/* Brand Section */
+.banner-brand { display: flex; align-items: center; gap: 15px; }
+.banner-logo { width: 48px; height: 48px; border-radius: 8px; background: rgba(255,255,255,0.2); padding: 4px; }
+.brand-text h1 { font-size: 1.25rem; font-weight: 800; line-height: 1.2; }
+.brand-text p { font-size: 0.85rem; opacity: 0.9; margin-top: 2px; }
+
+/* Language Button */
+.banner-lang {
+  position: absolute; top: 20px; left: 20px; /* تثبيت الزر في اليسار */
+  background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+  color: white; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: 700;
+  font-family: inherit; transition: 0.2s;
+}
+[dir="ltr"] .banner-lang { left: auto; right: 20px; }
+.banner-lang:hover { background: rgba(255,255,255,0.3); }
+
+/* Search Section */
+.banner-search {
+  background: white; border-radius: 14px; padding: 6px;
+  display: flex; gap: 10px; align-items: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  width: 100%; max-width: 800px; margin: 0 auto;
 }
 
-.brand img{
-  width:44px;
-  height:44px;
-  border-radius:10px;
+#categoryFilter {
+  border: none; background: #f1f5f9; padding: 8px 12px; border-radius: 8px;
+  font-family: inherit; font-weight: 700; color: var(--text); cursor: pointer;
+  max-width: 130px; font-size: 0.9rem;
 }
 
-.search-box{
-  flex:1;
-  display:flex;
-  background:#fff;
-  border-radius:999px;
-  padding:6px 12px;
-  gap:8px;
+.search-input-wrap { flex: 1; position: relative; display: flex; align-items: center; }
+#search {
+  width: 100%; border: none; padding: 8px 35px 8px 10px;
+  font-size: 1rem; font-family: inherit; color: var(--text);
+}
+.search-ico { position: absolute; left: 10px; font-size: 1.1rem; opacity: 0.5; pointer-events: none; }
+[dir="rtl"] .search-ico { left: auto; right: 0; } /* تصحيح مكان الأيقونة */
+[dir="rtl"] #search { padding: 8px 30px 8px 10px; }
+
+/* --- Main List --- */
+main {
+  flex: 1; max-width: 1200px; width: 100%; margin: -10px auto 20px; padding: 0 20px;
+  display: grid; gap: 15px; position: relative; z-index: 10;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-.search-box input,
-.search-box select{
-  border:none;
-  outline:none;
-  font-family:inherit;
+/* Card Styles */
+.shop-card {
+  background: white; border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+  display: flex; flex-direction: column; border: 1px solid #f1f5f9;
+  transition: transform 0.2s;
 }
+.shop-card:hover { transform: translateY(-3px); }
 
-/* Grid */
-main{
-  max-width:1200px;
-  margin:30px auto;
-  padding:0 14px;
-  display:grid;
-  gap:20px;
+.card-image-wrapper { height: 160px; background: #e2e8f0; position: relative; }
+.shop-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; }
+.shop-image.loaded { opacity: 1; }
+
+.card-content { padding: 15px; display: flex; flex-direction: column; flex: 1; }
+.shop-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.shop-name { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+.category-badge {
+  background: #e0f2fe; color: #0284c7; padding: 3px 8px;
+  border-radius: 6px; font-size: 0.75rem; font-weight: 700;
 }
-
-@media(min-width:640px){main{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1024px){main{grid-template-columns:repeat(3,1fr)}}
-
-/* Card */
-.shop-card{
-  background:#fff;
-  border-radius:var(--radius);
-  overflow:hidden;
-  border:1px solid #e5e7eb;
-  transition:.3s ease;
+.shop-description {
+  font-size: 0.9rem; color: var(--text-sec); margin-bottom: 15px; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
-
-.shop-card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 12px 28px rgba(0,0,0,.08);
-}
-
-/* صورة مضبوطة تمامًا */
-.card-img{
-  aspect-ratio:16/9;
-  background:#e5e7eb;
-}
-
-.card-img img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.card-body{padding:14px}
-.card-body h3{font-size:1rem;margin-bottom:6px}
-.card-body p{font-size:.85rem;color:#64748b;height:2.6em;overflow:hidden}
 
 /* Actions */
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:12px;
+.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.action-btn {
+  padding: 10px; text-align: center; border-radius: 8px; text-decoration: none;
+  font-weight: 700; font-size: 0.85rem; transition: 0.2s;
+}
+.btn-call { background: #f0f9ff; color: #0369a1; }
+.btn-wa { background: #f0fdf4; color: #15803d; }
+.btn-map { grid-column: 1 / -1; background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
+.btn-disabled { opacity: 0.5; pointer-events: none; background: #f1f5f9; color: #cbd5e1; }
+
+/* --- Footer --- */
+.footer {
+  text-align: center; padding: 30px 20px; color: var(--text-sec);
+  font-size: 0.85rem; background: #fff; border-top: 1px solid #e2e8f0;
+  margin-top: auto;
 }
 
-.action-btn{
-  padding:10px;
-  border-radius:10px;
-  text-align:center;
-  font-size:.85rem;
-  font-weight:700;
-  text-decoration:none;
-}
+/* Skeleton & Loading */
+.skeleton { height: 350px; background: #fff; border-radius: 12px; animation: pulse 1.5s infinite; }
+.empty-state { grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-sec); }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-.btn-call{background:#f0f9ff;color:#0284c7}
-.btn-wa{background:#dcfce7;color:#16a34a}
-.btn-disabled{background:#f1f5f9;color:var(--muted)}
-
-.loading{
-  grid-column:1/-1;
-  text-align:center;
-  color:var(--muted);
-  padding:40px;
-}
-
-.footer{
-  text-align:center;
-  font-size:.75rem;
-  color:#64748b;
-  padding:20px;
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+  .banner-brand { justify-content: center; text-align: center; }
+  .banner-inner { gap: 15px; }
+  .banner-logo { display: none; } /* إخفاء اللوجو في الموبايل لتوفير مساحة */
+  .banner-search { flex-direction: column; align-items: stretch; gap: 8px; }
+  #categoryFilter { max-width: 100%; text-align: center; }
 }
