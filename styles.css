@@ -105,6 +105,16 @@ main { max-width: 1200px; margin: auto; padding: 0 16px; display: grid; gap: 16p
   background: #f8fafc; color: var(--text-sec); border-color: #e2e8f0; 
 }
 
+.action-btn svg {
+  flex-shrink: 0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.action-btn span {
+  line-height: 1;
+}
+
 /* Disabled State (Grayed out) */
 .btn-disabled {
   background: var(--btn-disabled);
