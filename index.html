@@ -39,34 +39,25 @@
 
 <body>
 
-<header class="banner">
-  <div class="banner-inner">
-
-    <div class="banner-brand">
-      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="شعار برج النصر" class="banner-logo">
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke"
+           alt="برج النصر" width="44" height="44">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
-        <p>كل الأنشطة والخدمات في مكان واحد</p>
+        <p>خدمات قريبة • تواصل مباشر • بدون تسجيل</p>
       </div>
     </div>
 
-    <div class="banner-search">
-      <select id="categoryFilter" aria-label="اختر القسم"></select> <div class="search-input-wrap">
-        <input
-          id="search"
-          type="search"
-          placeholder="ابحث عن طبيب، تخصص، رقم…"
-          autocomplete="off"
-        >
-        <span class="search-ico">🔍</span>
-      </div>
-    </div>
+    <button id="langBtn" class="lang-btn" aria-label="Switch Language">EN</button>
+  </div>
 
-    <button id="langBtn" class="banner-lang">EN</button>
-
+  <div class="search-box">
+    <select id="categoryFilter" aria-label="التصنيف"></select>
+    <input id="search" type="search" placeholder="ابحث عن خدمة أو اسم..." autocomplete="off">
   </div>
 </header>
-
 <main id="list" aria-live="polite"></main>
 
 <footer class="footer">
