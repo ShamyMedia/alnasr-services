@@ -2,24 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>دليل خدمات برج النصر</title>
 
-  <!-- SEO -->
   <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
   <meta property="og:title" content="دليل خدمات برج النصر">
   <meta property="og:description" content="كل الأنشطة والخدمات في مكان واحد">
   <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
+  <meta property="og:type" content="website">
 
-  <!-- CSP (آمن بدون كسر التصميم) -->
   <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
-      img-src 'self' https://lh3.googleusercontent.com data:;
-      script-src 'self';
-      style-src 'self' https://fonts.googleapis.com;
+      img-src 'self' https: data: blob:;
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       font-src https://fonts.gstatic.com;
-      connect-src https://script.google.com https://script.googleusercontent.com;
+      connect-src 'self' https://script.google.com https://script.googleusercontent.com;
     ">
 
   <link rel="icon" href="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
@@ -28,43 +27,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Directory",
+    "name": "دليل خدمات برج النصر"
+  }
+  </script>
 </head>
 
 <body>
 
-<header class="header">
-  <div class="header-inner">
+<header class="banner">
+  <div class="banner-inner">
 
-    <div class="brand">
+    <div class="banner-brand">
+      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke" alt="شعار برج النصر" class="banner-logo">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
         <p>كل الأنشطة والخدمات في مكان واحد</p>
       </div>
-      <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke"
-           alt="برج النصر"
-           class="brand-icon"
-           width="48"
-           height="48"
-           loading="eager">
     </div>
 
-    <div class="search-wrapper">
-      <div class="search-box">
-        <select id="categoryFilter" aria-label="التصنيف"></select>
-        <div class="divider"></div>
-        <input id="search" type="search" placeholder="ابحث عن طبيب، تخصص، رقم..." autocomplete="off">
+    <div class="banner-search">
+      <select id="categoryFilter" aria-label="اختر القسم"></select> <div class="search-input-wrap">
+        <input
+          id="search"
+          type="search"
+          placeholder="ابحث عن طبيب، تخصص، رقم…"
+          autocomplete="off"
+        >
+        <span class="search-ico">🔍</span>
       </div>
     </div>
 
-    <button id="langBtn" class="lang-btn">EN</button>
+    <button id="langBtn" class="banner-lang">EN</button>
 
   </div>
 </header>
 
-<main id="list"></main>
+<main id="list" aria-live="polite"></main>
 
 <footer class="footer">
-لدليل الشامل والموثوق لكل الخدمات، الاطباء، والأنشطة التجارية في منطقة برج النصر. اعثر على أرقام الهواتف، العناوين، وتواصل مباشرة.
+  <p>الدليل الشامل والموثوق لكل الخدمات، الأطباء، والأنشطة التجارية في منطقة برج النصر.</p>
 </footer>
 
 <script src="script.js" defer></script>
