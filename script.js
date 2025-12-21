@@ -1,6 +1,6 @@
 const CONFIG = {
   API: "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec",
-  CACHE_KEY: "alnasr_data_ultra_v7",
+  CACHE_KEY: "alnasr_data_original_v1",
   TTL: 3600000, 
   TIMEOUT: 12000,
   FALLBACK_IMG: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dy='.3em' font-size='30' fill='%23cbd5e1' text-anchor='middle'%3E🏢%3C/text%3E%3C/svg%3E"
@@ -19,8 +19,7 @@ const DOM = {
   search: document.getElementById("search"),
   filter: document.getElementById("categoryFilter"),
   langBtn: document.getElementById("langBtn"),
-  jsonLd: document.getElementById("json-ld"),
-  metaDesc: document.getElementById("meta-desc")
+  jsonLd: document.getElementById("json-ld")
 };
 
 const escapeHTML = str => str ? String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;") : "";
@@ -31,22 +30,10 @@ function showSkeleton() {
 }
 
 function updateUI() {
-  const isAr = state.lang === "ar";
-  document.documentElement.dir = isAr ? "rtl" : "ltr";
+  document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
   document.documentElement.lang = state.lang;
-  
-  // UI Texts
-  DOM.langBtn.textContent = isAr ? "EN" : "AR";
-  DOM.langBtn.setAttribute("aria-label", isAr ? "Switch to English" : "التبديل للعربية");
-  DOM.search.placeholder = isAr ? "ابحث عن طبيب أو نشاط..." : "Search for services...";
-  
-  // Dynamic SEO (Safe Static Strings)
-  document.title = isAr ? "دليل خدمات برج النصر" : "Al-Nasr Tower Services Directory";
-  if(DOM.metaDesc) {
-    DOM.metaDesc.content = isAr 
-      ? "الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر." 
-      : "The trusted local directory for services and businesses in Al-Nasr Tower.";
-  }
+  DOM.langBtn.textContent = state.lang === "ar" ? "EN" : "AR";
+  DOM.search.placeholder = state.lang === "ar" ? "ابحث عن طبيب أو نشاط..." : "Search for services...";
 }
 
 function updateSchema() {
@@ -117,6 +104,7 @@ function render() {
     const hasMap = (i.lat && i.lng);
     const mapLink = hasMap ? `https://www.google.com/maps/search/?api=1&query=${i.lat},${i.lng}` : "javascript:void(0)";
     
+    // A11y
     const disableAttr = (cond) => cond ? 'aria-disabled="true" tabindex="-1"' : '';
 
     d.innerHTML = `
@@ -150,7 +138,6 @@ async function loadData(isRetry = false) {
   if(!isRetry) showSkeleton();
   
   try {
-    // 1. Check Cache (Skip if retrying to force fresh fetch if needed, optional)
     if (!isRetry) {
         const cached = localStorage.getItem(CONFIG.CACHE_KEY);
         const cacheTime = localStorage.getItem(CONFIG.CACHE_KEY + "_ts");
@@ -159,12 +146,10 @@ async function loadData(isRetry = false) {
             updateCategoryDropdown();
             updateSchema();
             render();
-            console.log("Loaded from cache");
             return;
         }
     }
 
-    // 2. Network Fetch
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
     
@@ -186,10 +171,9 @@ async function loadData(isRetry = false) {
     
   } catch (err) {
     console.error(err);
-    const isAr = state.lang === 'ar';
-    const txtErr = isAr ? 'فشل تحميل البيانات' : 'Failed to load data';
-    const txtRetry = isAr ? 'إعادة المحاولة' : 'Retry';
-    const txtLoading = isAr ? 'جاري التحميل...' : 'Loading...';
+    const txtErr = state.lang === 'ar' ? 'فشل تحميل البيانات' : 'Failed to load data';
+    const txtRetry = state.lang === 'ar' ? 'إعادة المحاولة' : 'Retry';
+    const txtLoading = state.lang === 'ar' ? 'جاري التحميل...' : 'Loading...';
 
     DOM.list.innerHTML = `
       <div class='empty-state'>
@@ -201,15 +185,9 @@ async function loadData(isRetry = false) {
     const retryBtn = document.getElementById("retryBtn");
     if(retryBtn) {
       retryBtn.addEventListener("click", () => {
-        // UI Feedback: Loading state
         retryBtn.textContent = txtLoading;
         retryBtn.disabled = true;
-        
-        // Retry logic (recursive with flag)
-        loadData(true).then(() => {
-            // Success handles render, no need to reset button
-        }).catch(() => {
-            // If retry fails again, reset button
+        loadData(true).then(() => {}).catch(() => {
              retryBtn.textContent = txtRetry + " ↻";
              retryBtn.disabled = false;
         });
@@ -237,6 +215,6 @@ DOM.filter.addEventListener("change", (e) => {
   render();
 });
 
-// Initialization
+// Init
 updateUI();
 loadData();
