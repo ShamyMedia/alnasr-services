@@ -6,19 +6,19 @@
   <title>دليل خدمات برج النصر</title>
   <meta name="description" content="الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر.">
 
-  <!-- Open Graph / Social Preview -->
+  <!-- Open Graph -->
   <meta property="og:title" content="دليل خدمات برج النصر">
   <meta property="og:description" content="كل الأنشطة والخدمات في مكان واحد">
   <meta property="og:image" content="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke">
   <meta property="og:type" content="website">
 
-  <!-- Security -->
+  <!-- Security: Strict CSP -->
   <meta http-equiv="Content-Security-Policy"
     content="
       default-src 'self';
       img-src 'self' https: data: blob:;
       script-src 'self';
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      style-src 'self' https://fonts.googleapis.com;
       font-src https://fonts.gstatic.com;
       connect-src 'self' https://script.google.com https://script.googleusercontent.com;
       base-uri 'self';
@@ -30,17 +30,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- JSON-LD for SEO -->
+  <script type="application/ld+json" id="json-ld">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "دليل خدمات برج النصر",
+    "itemListElement": []
+  }
+  </script>
 </head>
 
 <body>
 
 <header class="banner">
   <div class="banner-inner">
-
     <div class="banner-brand">
       <img src="https://lh3.googleusercontent.com/d/1n9jnq1lOkL2saY3SAzreKgUbsBSvtnke"
            alt="شعار برج النصر"
-           class="banner-logo">
+           class="banner-logo"
+           width="52" height="52">
       <div class="brand-text">
         <h1>دليل خدمات برج النصر</h1>
         <p>كل الأنشطة والخدمات في مكان واحد</p>
@@ -48,7 +58,9 @@
     </div>
 
     <div class="banner-search">
-      <select id="categoryFilter" aria-label="اختر القسم"></select>
+      <select id="categoryFilter" aria-label="اختر القسم">
+        <option value="">الكل</option>
+      </select>
       <div class="search-input-wrap">
         <input id="search" type="search" placeholder="ابحث عن طبيب أو نشاط..." autocomplete="off">
         <span class="search-ico">🔍</span>
@@ -56,7 +68,6 @@
     </div>
 
     <button id="langBtn" class="banner-lang">EN</button>
-
   </div>
 </header>
 
