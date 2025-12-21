@@ -1,7 +1,7 @@
 const CONFIG = {
   API: "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec",
-  CACHE_KEY: "alnasr_final_v1",
-  TTL: 3600000,
+  CACHE_KEY: "alnasr_prod_secure_v4",
+  TTL: 3600000, // 1 Hour
   FALLBACK_IMG: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dy='.3em' font-size='30' fill='%23cbd5e1' text-anchor='middle'%3E🏢%3C/text%3E%3C/svg%3E"
 };
 
@@ -20,18 +20,25 @@ const DOM = {
   langBtn: document.getElementById("langBtn")
 };
 
-// Security & Formatting
+// Security: Prevent XSS attacks from Google Sheet data
 const escapeHTML = s => String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+
+// Normalize text for better searching
 const norm = s => String(s || "").toLowerCase().replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ىي]/g,"ي").trim();
+
+// Convert <br> to newline for display
 const cleanText = s => String(s || "").replace(/<br\s*\/?>/gi, '\n');
+
+function showSkeleton() {
+  DOM.list.innerHTML = Array(6).fill(`<div class="shop-card skeleton-card"><div class="skeleton-box"></div></div>`).join("");
+}
 
 function updateUI() {
   document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
-  document.documentElement.lang = state.lang;
   DOM.langBtn.textContent = state.lang === "ar" ? "EN" : "AR";
   DOM.search.placeholder = state.lang === "ar" ? "ابحث عن طبيب أو نشاط..." : "Search services...";
   
-  // Populate Category Dropdown
+  // Populate Categories
   const currentVal = DOM.filter.value;
   DOM.filter.innerHTML = `<option value="">${state.lang === 'ar' ? 'الكل' : 'All'}</option>`;
   Array.from(state.categories).sort().forEach(cat => {
@@ -45,6 +52,7 @@ function updateUI() {
 
 function render() {
   DOM.list.innerHTML = "";
+
   const items = state.data.filter(i => 
     i._search.includes(state.search) && 
     (!state.filter || i.category === state.filter)
@@ -56,16 +64,17 @@ function render() {
   }
 
   const frag = document.createDocumentFragment();
+
   items.forEach(i => {
     const el = document.createElement("div");
     el.className = "shop-card";
 
-    // Global Map Link
+    // Fix Map Link
     const mapLink = (i.lat && i.lng) 
       ? `https://www.google.com/maps/search/?api=1&query=${i.lat},${i.lng}`
       : "javascript:void(0)";
 
-    // Prepare Text
+    // Secure Data
     const safeName = escapeHTML(cleanText(i.name));
     const safeDesc = escapeHTML(cleanText(i.description));
     const safeCat = escapeHTML(cleanText(i.category));
@@ -81,26 +90,27 @@ function render() {
         </div>
         <div class="shop-description">${safeDesc}</div>
         <div class="card-actions">
-          <a class="action-btn btn-call ${!i.phone ? "btn-disabled" : ""}" href="tel:${i.phone}">📞 ${state.lang === 'ar' ? 'اتصال' : 'Call'}</a>
-          <a class="action-btn btn-wa ${!i.whatsapp ? "btn-disabled" : ""}" href="https://wa.me/${i.whatsapp}" target="_blank" rel="noopener noreferrer">💬 ${state.lang === 'ar' ? 'واتساب' : 'WhatsApp'}</a>
-          <a class="action-btn btn-map ${(!i.lat || !i.lng) ? "btn-disabled" : ""}" href="${mapLink}" target="_blank" rel="noopener noreferrer">📍 ${state.lang === 'ar' ? 'الموقع' : 'Map'}</a>
+          <a class="action-btn btn-call ${!i.phone?"btn-disabled":""}" href="tel:${i.phone}">📞 ${state.lang === 'ar' ? 'اتصال' : 'Call'}</a>
+          <a class="action-btn btn-wa ${!i.whatsapp?"btn-disabled":""}" href="https://wa.me/${i.whatsapp}" target="_blank" rel="noopener noreferrer">💬 ${state.lang === 'ar' ? 'واتساب' : 'WhatsApp'}</a>
+          <a class="action-btn btn-map ${(!i.lat || !i.lng)?"btn-disabled":""}" href="${mapLink}" target="_blank" rel="noopener noreferrer">📍 ${state.lang === 'ar' ? 'الموقع' : 'Map'}</a>
         </div>
       </div>
     `;
     
-    // Image Loader
     const img = el.querySelector("img");
     img.onload = () => img.classList.add("loaded");
     img.onerror = () => { img.src = CONFIG.FALLBACK_IMG; img.classList.add("loaded"); };
 
     frag.appendChild(el);
   });
+
   DOM.list.appendChild(frag);
 }
 
 async function load() {
-  // Try Cache
+  showSkeleton();
   const cached = localStorage.getItem(CONFIG.CACHE_KEY);
+  
   if (cached) {
     try {
       state.data = JSON.parse(cached);
@@ -110,10 +120,9 @@ async function load() {
     } catch { localStorage.removeItem(CONFIG.CACHE_KEY); }
   }
 
-  // Fetch New Data
   try {
     const res = await fetch(CONFIG.API);
-    if (!res.ok) throw new Error("Net");
+    if (!res.ok) throw new Error("Network Error");
     const json = await res.json();
     
     state.categories.clear();
@@ -138,7 +147,6 @@ async function load() {
   }
 }
 
-// Events
 DOM.langBtn.addEventListener("click", () => {
   state.lang = state.lang === "ar" ? "en" : "ar";
   localStorage.setItem("lang", state.lang);
@@ -156,6 +164,6 @@ DOM.filter.addEventListener("change", e => {
   render();
 });
 
-// Init
+// Start
 updateUI();
 load();
