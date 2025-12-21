@@ -27,7 +27,6 @@ body {
   overflow: hidden;
 }
 
-/* Decorative background (light & safe) */
 .banner::before,
 .banner::after {
   content: "";
@@ -161,64 +160,97 @@ body {
   background: #ffffff;
 }
 
-/* --- Mobile --- */
-@media (max-width: 768px) {
-  .banner-inner {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .banner-brand {
-    justify-content: center;
-  }
-
-  .banner-search {
-    margin: 10px auto;
-  }
-
-  .banner-lang {
-    justify-self: center;
-  }
-}
-
-
 /* --- Main List --- */
 main {
-  flex: 1; max-width: 1200px; width: 100%; margin: -10px auto 20px; padding: 0 20px;
-  display: grid; gap: 15px; position: relative; z-index: 10;
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: -10px auto 20px;
+  padding: 0 20px;
+  display: grid;
+  gap: 15px;
+  position: relative;
+  z-index: 10;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-/* Card Styles */
 .shop-card {
-  background: white; border-radius: var(--radius);
-  box-shadow: var(--shadow); overflow: hidden;
-  display: flex; flex-direction: column; border: 1px solid #f1f5f9;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f1f5f9;
   transition: transform 0.2s;
 }
 .shop-card:hover { transform: translateY(-3px); }
 
-.card-image-wrapper { height: 160px; background: #e2e8f0; position: relative; }
-.shop-image { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; }
+.card-image-wrapper {
+  height: 180px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.shop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: 0.3s;
+}
 .shop-image.loaded { opacity: 1; }
 
-.card-content { padding: 15px; display: flex; flex-direction: column; flex: 1; }
-.shop-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.shop-name { font-weight: 700; font-size: 1.1rem; color: var(--text); }
+.card-content {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.shop-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+}
 .category-badge {
-  background: #e0f2fe; color: #0284c7; padding: 3px 8px;
-  border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+  background: #e0f2fe;
+  color: #0284c7;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 .shop-description {
-  font-size: 0.9rem; color: var(--text-sec); margin-bottom: 15px; flex: 1;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 0.9rem;
+  color: var(--text-sec);
+  margin-bottom: 15px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Actions */
-.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+}
 .action-btn {
-  padding: 10px; text-align: center; border-radius: 8px; text-decoration: none;
-  font-weight: 700; font-size: 0.85rem; transition: 0.2s;
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: 0.2s;
 }
 .btn-call { background: #f0f9ff; color: #0369a1; }
 .btn-wa { background: #f0fdf4; color: #15803d; }
@@ -227,8 +259,12 @@ main {
 
 /* --- Footer --- */
 .footer {
-  text-align: center; padding: 30px 20px; color: var(--text-sec);
-  font-size: 0.85rem; background: #fff; border-top: 1px solid #e2e8f0;
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-sec);
+  font-size: 0.85rem;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
   margin-top: auto;
 }
 
@@ -241,7 +277,7 @@ main {
 @media (max-width: 600px) {
   .banner-brand { justify-content: center; text-align: center; }
   .banner-inner { gap: 15px; }
-  .banner-logo { display: none; } /* إخفاء اللوجو في الموبايل لتوفير مساحة */
+  .banner-logo { display: none; }
   .banner-search { flex-direction: column; align-items: stretch; gap: 8px; }
   #categoryFilter { max-width: 100%; text-align: center; }
 }
