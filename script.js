@@ -1,148 +1,242 @@
 const CONFIG = {
   API: "https://script.google.com/macros/s/AKfycbwGZjfCiI2x2Q2sBT3ZY8CKfKBqKCVF6NFVqYcjvyAR84CkDShrdx5_2onSU4SlVz6GDQ/exec",
-  CACHE_KEY: "alnasr_data_v2",
+  CACHE_KEY: "alnasr_data_ultra_v7",
   TTL: 3600000, 
   TIMEOUT: 12000,
-  RETRY_DELAY: 1800,
-  FALLBACK_IMG:
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dy='.3em' font-size='30' fill='%23cbd5e1' text-anchor='middle'%3E🏢%3C/text%3E%3C/svg%3E"
+  FALLBACK_IMG: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 200'%3E%3Crect width='300' height='200' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' dy='.3em' font-size='30' fill='%23cbd5e1' text-anchor='middle'%3E🏢%3C/text%3E%3C/svg%3E"
 };
 
-let state = {
+const state = {
   data: [],
-  lang: localStorage.getItem("lang") || "ar"
+  categories: new Set(),
+  lang: localStorage.getItem("lang") || "ar",
+  searchTerm: "",
+  categoryFilter: ""
 };
 
 const DOM = {
   list: document.getElementById("list"),
   search: document.getElementById("search"),
   filter: document.getElementById("categoryFilter"),
-  langBtn: document.getElementById("langBtn")
+  langBtn: document.getElementById("langBtn"),
+  jsonLd: document.getElementById("json-ld"),
+  metaDesc: document.getElementById("meta-desc")
 };
 
-if (!DOM.list || !DOM.search || !DOM.filter || !DOM.langBtn) {
-  throw new Error("DOM elements missing");
-}
-
-const norm = t =>
-  String(t || "")
-    .toLowerCase()
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ة/g, "ه")
-    .replace(/[ىي]/g, "ي");
+const escapeHTML = str => str ? String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;") : "";
+const norm = t => String(t || "").toLowerCase().replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/[ىي]/g, "ي").trim();
 
 function showSkeleton() {
-  DOM.list.innerHTML = Array(6)
-    .fill(`<div class="shop-card"><div class="skeleton"></div></div>`)
-    .join("");
+  DOM.list.innerHTML = Array(6).fill(`<div class="shop-card skeleton-card"><div class="skeleton-box"></div></div>`).join("");
 }
 
 function updateUI() {
-  document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
-  DOM.langBtn.textContent = state.lang === "ar" ? "EN" : "AR";
+  const isAr = state.lang === "ar";
+  document.documentElement.dir = isAr ? "rtl" : "ltr";
+  document.documentElement.lang = state.lang;
+  
+  // UI Texts
+  DOM.langBtn.textContent = isAr ? "EN" : "AR";
+  DOM.langBtn.setAttribute("aria-label", isAr ? "Switch to English" : "التبديل للعربية");
+  DOM.search.placeholder = isAr ? "ابحث عن طبيب أو نشاط..." : "Search for services...";
+  
+  // Dynamic SEO (Safe Static Strings)
+  document.title = isAr ? "دليل خدمات برج النصر" : "Al-Nasr Tower Services Directory";
+  if(DOM.metaDesc) {
+    DOM.metaDesc.content = isAr 
+      ? "الدليل المحلي الموثوق للخدمات والأنشطة التجارية في برج النصر." 
+      : "The trusted local directory for services and businesses in Al-Nasr Tower.";
+  }
+}
+
+function updateSchema() {
+  if (!DOM.jsonLd) return;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "دليل خدمات برج النصر",
+    "itemListElement": state.data.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "item": {
+        "@type": "LocalBusiness",
+        "name": item.name,
+        "image": item.image,
+        "telephone": item.phone,
+        "address": { "@type": "PostalAddress", "addressLocality": "برج النصر", "addressCountry": "EG" }
+      }
+    }))
+  };
+  DOM.jsonLd.textContent = JSON.stringify(schema);
 }
 
 function processData(raw) {
-  return Array.isArray(raw)
-    ? raw.map(i => ({
-        ...i,
-        image: i.image || CONFIG.FALLBACK_IMG,
-        _s: norm(`${i.name || ""} ${i.category || ""} ${i.description || ""} ${i.phone || ""}`)
-      }))
-    : [];
+  if (!Array.isArray(raw)) return [];
+  state.categories.clear();
+  return raw.map(i => {
+    if (i.category) state.categories.add(i.category);
+    return {
+      ...i,
+      name: i.name || "بدون اسم",
+      image: i.image && i.image.startsWith("http") ? i.image : CONFIG.FALLBACK_IMG,
+      _searchStr: norm(`${i.name} ${i.category} ${i.description} ${i.phone}`)
+    };
+  });
+}
+
+function updateCategoryDropdown() {
+  const currentVal = DOM.filter.value;
+  DOM.filter.innerHTML = `<option value="">${state.lang === 'ar' ? 'الكل' : 'All'}</option>`;
+  Array.from(state.categories).sort().forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    DOM.filter.appendChild(opt);
+  });
+  if (currentVal) DOM.filter.value = currentVal;
 }
 
 function render() {
   DOM.list.innerHTML = "";
-  if (!state.data.length) {
-    DOM.list.innerHTML = "<div class='empty-state'>لا توجد بيانات للعرض</div>";
+  const filtered = state.data.filter(i => i._searchStr.includes(state.searchTerm) && (state.categoryFilter === "" || i.category === state.categoryFilter));
+
+  if (!filtered.length) {
+    DOM.list.innerHTML = `<div class='empty-state'>${state.lang === 'ar' ? 'لا توجد نتائج مطابقة' : 'No results found'}</div>`;
     return;
   }
 
-  state.data.forEach(i => {
+  const fragment = document.createDocumentFragment();
+  filtered.forEach(i => {
     const d = document.createElement("div");
     d.className = "shop-card";
 
+    const safeName = escapeHTML(i.name);
+    const safeCat = escapeHTML(i.category);
+    const safeDesc = escapeHTML(i.description);
+
+    const hasMap = (i.lat && i.lng);
+    const mapLink = hasMap ? `https://www.google.com/maps/search/?api=1&query=${i.lat},${i.lng}` : "javascript:void(0)";
+    
+    const disableAttr = (cond) => cond ? 'aria-disabled="true" tabindex="-1"' : '';
+
     d.innerHTML = `
       <div class="card-image-wrapper">
-        <img class="shop-image" src="${i.image}" alt="${i.name}" loading="lazy" />
+        <img class="shop-image" src="${i.image}" alt="${safeName}" loading="lazy" />
       </div>
       <div class="card-content">
         <div class="shop-header">
-          <span class="shop-name">${i.name}</span>
-          <span class="category-badge">${i.category}</span>
+          <span class="shop-name">${safeName}</span>
+          <span class="category-badge">${safeCat}</span>
         </div>
-        <div class="shop-description">${i.description || ""}</div>
+        <div class="shop-description" title="${safeDesc}">${safeDesc}</div>
         <div class="card-actions">
-          <a href="tel:${i.phone}" class="action-btn btn-call ${!i.phone ? "btn-disabled" : ""}">اتصال</a>
-          <a href="https://wa.me/${i.whatsapp}" class="action-btn btn-wa ${!i.whatsapp ? "btn-disabled" : ""}" target="_blank">واتساب</a>
-          <a href="https://www.google.com/maps/search/?api=1&query=${i.lat},${i.lng}" class="action-btn btn-map">خريطة</a>
+          <a href="tel:${i.phone}" class="action-btn btn-call ${!i.phone ? "btn-disabled" : ""}" ${disableAttr(!i.phone)}>${state.lang === 'ar' ? 'اتصال' : 'Call'}</a>
+          <a href="https://wa.me/${i.whatsapp}" class="action-btn btn-wa ${!i.whatsapp ? "btn-disabled" : ""}" target="_blank" rel="noopener noreferrer" ${disableAttr(!i.whatsapp)}>${state.lang === 'ar' ? 'واتساب' : 'WhatsApp'}</a>
+          <a href="${mapLink}" class="action-btn btn-map ${!hasMap ? "btn-disabled" : ""}" target="_blank" rel="noopener noreferrer" ${disableAttr(!hasMap)}>${state.lang === 'ar' ? 'خريطة' : 'Map'}</a>
         </div>
       </div>
     `;
 
     const img = d.querySelector(".shop-image");
     img.onload = () => img.classList.add("loaded");
-    DOM.list.appendChild(d);
+    img.onerror = () => { img.src = CONFIG.FALLBACK_IMG; img.classList.add("loaded"); };
+    
+    fragment.appendChild(d);
   });
+  DOM.list.appendChild(fragment);
 }
 
-async function loadData() {
-  showSkeleton();
+async function loadData(isRetry = false) {
+  if(!isRetry) showSkeleton();
+  
   try {
-    const cached = localStorage.getItem(CONFIG.CACHE_KEY);
-    const cacheTime = localStorage.getItem(CONFIG.CACHE_KEY + "_ts");
-
-    if (cached && cacheTime && Date.now() - cacheTime < CONFIG.TTL) {
-      state.data = processData(JSON.parse(cached));
-      render();
-      return;
+    // 1. Check Cache (Skip if retrying to force fresh fetch if needed, optional)
+    if (!isRetry) {
+        const cached = localStorage.getItem(CONFIG.CACHE_KEY);
+        const cacheTime = localStorage.getItem(CONFIG.CACHE_KEY + "_ts");
+        if (cached && cacheTime && Date.now() - cacheTime < CONFIG.TTL) {
+            state.data = processData(JSON.parse(cached));
+            updateCategoryDropdown();
+            updateSchema();
+            render();
+            console.log("Loaded from cache");
+            return;
+        }
     }
 
-    const r = await fetch(CONFIG.API);
+    // 2. Network Fetch
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+    
+    const r = await fetch(CONFIG.API, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
+    if (!r.ok) throw new Error("Server Error");
+    
     const j = await r.json();
-    state.data = processData(j.shops);
-    render();
-
-    localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(j.shops));
+    const rawData = j.shops || (Array.isArray(j) ? j : []);
+    state.data = processData(rawData);
+    
+    localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(rawData));
     localStorage.setItem(CONFIG.CACHE_KEY + "_ts", Date.now());
-  } catch {
-    DOM.list.innerHTML = "<div class='empty-state'>فشل تحميل البيانات</div>";
+    
+    updateCategoryDropdown();
+    updateSchema();
+    render();
+    
+  } catch (err) {
+    console.error(err);
+    const isAr = state.lang === 'ar';
+    const txtErr = isAr ? 'فشل تحميل البيانات' : 'Failed to load data';
+    const txtRetry = isAr ? 'إعادة المحاولة' : 'Retry';
+    const txtLoading = isAr ? 'جاري التحميل...' : 'Loading...';
+
+    DOM.list.innerHTML = `
+      <div class='empty-state'>
+        <p>${txtErr}</p>
+        <button id="retryBtn" class="action-btn btn-map btn-retry" aria-label="${txtRetry}">${txtRetry} ↻</button>
+      </div>
+    `;
+
+    const retryBtn = document.getElementById("retryBtn");
+    if(retryBtn) {
+      retryBtn.addEventListener("click", () => {
+        // UI Feedback: Loading state
+        retryBtn.textContent = txtLoading;
+        retryBtn.disabled = true;
+        
+        // Retry logic (recursive with flag)
+        loadData(true).then(() => {
+            // Success handles render, no need to reset button
+        }).catch(() => {
+            // If retry fails again, reset button
+             retryBtn.textContent = txtRetry + " ↻";
+             retryBtn.disabled = false;
+        });
+      });
+    }
   }
 }
 
+// Event Listeners
 DOM.langBtn.addEventListener("click", () => {
   state.lang = state.lang === "ar" ? "en" : "ar";
   localStorage.setItem("lang", state.lang);
   updateUI();
+  updateCategoryDropdown();
   render();
 });
 
-DOM.search.addEventListener("input", e => {
-  const val = norm(e.target.value);
-  state.data.forEach(i => i._visible = i._s.includes(val));
-  renderFiltered();
+DOM.search.addEventListener("input", (e) => {
+  state.searchTerm = norm(e.target.value);
+  render();
 });
 
-function renderFiltered() {
-  DOM.list.innerHTML = "";
-  const filtered = state.data.filter(i => i._visible !== false);
-  if (!filtered.length) {
-    DOM.list.innerHTML = "<div class='empty-state'>لا توجد نتائج مطابقة</div>";
-    return;
-  }
-  filtered.forEach(i => {
-    const d = document.createElement("div");
-    d.className = "shop-card";
-    d.innerHTML = `
-      <div class="card-image-wrapper">
-        <img class="shop-image" src="${i.image}" alt="${i.name}" loading="lazy" />
-      </div>
-      <div class="card-content">
-        <div class="shop-header">
-          <span class="shop-name">${i.name}</span>
-          <span class="category-badge">${i.category}</span>
-        </div>
-        <div class="shop-description">${i.description || ""}</div>
-        <div class="card-actions">
-          <a href="tel:${i.phone}" class="action-btn btn-call ${!i.phone ? "btn-disabled" :
+DOM.filter.addEventListener("change", (e) => {
+  state.categoryFilter = e.target.value;
+  render();
+});
+
+// Initialization
+updateUI();
+loadData();
