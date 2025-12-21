@@ -22,6 +22,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden; /* يمنع السحب العرضي في الموبايل */
 }
 
 /* ===== Banner (Header) ===== */
@@ -29,7 +30,7 @@ body {
   background: linear-gradient(135deg, #dff6fb, #7fdbe3);
   padding: 20px 0;
   border-radius: 0 0 24px 24px;
-  margin-bottom: 25px; /* مسافة فاصلة بين الهيدر والكروت */
+  margin-bottom: 25px;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -48,7 +49,7 @@ body {
   max-width: 1200px;
   margin: auto;
   padding: 0 20px;
-  display: flex; /* نستخدم Flexbox للكمبيوتر لضمان الاستقامة */
+  display: flex; /* Flexbox للكمبيوتر */
   align-items: center;
   gap: 20px;
   position: relative;
@@ -77,7 +78,7 @@ body {
 .banner-search {
   background: #ffffff; border-radius: 12px; padding: 6px;
   display: flex; gap: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  flex: 1; max-width: 500px; margin-right: auto; /* دفع البحث لليسار */
+  flex: 1; max-width: 500px; margin-right: auto;
 }
 
 #categoryFilter {
@@ -111,34 +112,33 @@ body {
 @media (max-width: 768px) {
   .banner-inner {
     display: grid;
-    /* في RTL: العمود الأول هو اليمين، والثاني هو اليسار */
+    /* تصحيح الاتجاه: العمود الأول (auto) لليمين، الثاني (1fr) لليسار */
     grid-template-columns: auto 1fr; 
     gap: 15px 15px;
     align-items: center;
-    padding-top: 20px; /* مسافة لزر اللغة العائم */
+    padding-top: 40px; /* مسافة إضافية لزر اللغة */
   }
 
-  /* فك تجميع البراند للتحكم في اللوجو والنص بشكل منفصل */
+  /* فك تجميع البراند */
   .banner-brand { display: contents; }
 
   /* 1. اللوجو (يمين - يمتد لارتفاع صفين) */
   .banner-logo {
     grid-column: 1; /* العمود الأيمن */
     grid-row: 1 / span 2; /* يمتد لصفين */
-    width: 75px; height: 75px;
+    width: 80px; height: 80px; /* تكبير الحجم */
     align-self: center;
-    margin-left: 10px;
   }
 
   /* 2. النصوص (يسار - الصف الأول) */
   .brand-text {
     grid-column: 2; /* العمود الأيسر */
     grid-row: 1;    /* الصف العلوي */
-    text-align: right;
-    align-self: end; /* محاذاة لأسفل الصف */
+    text-align: right; /* محاذاة النص لليمين */
+    align-self: end;
   }
-  .brand-text h1 { font-size: 1.1rem; line-height: 1.2; }
-  .brand-text p { font-size: 0.75rem; display: block; }
+  .brand-text h1 { font-size: 1.2rem; line-height: 1.2; }
+  .brand-text p { font-size: 0.8rem; }
 
   /* 3. البحث (يسار - الصف الثاني) */
   .banner-search {
@@ -148,13 +148,13 @@ body {
   }
   
   /* تعديل حجم الفلتر في الموبايل */
-  #categoryFilter { padding: 0 8px; font-size: 0.8rem; }
+  #categoryFilter { padding: 0 10px; font-size: 0.8rem; }
 
-  /* زر اللغة - عائم في أقصى اليسار */
+  /* زر اللغة - عائم في أقصى اليسار العلوي */
   .banner-lang {
     position: absolute; top: 15px; left: 20px;
-    padding: 4px 10px; font-size: 0.75rem;
-    background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 6px 12px; font-size: 0.8rem;
+    background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 }
 
@@ -162,7 +162,8 @@ body {
 main {
   flex: 1; max-width: 1200px; margin: 0 auto 30px; padding: 0 15px;
   display: grid; gap: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  /* ضبط الكروت لتملأ العرض في الموبايل */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
 .shop-card {
@@ -171,7 +172,7 @@ main {
   display: flex; flex-direction: column; border: 1px solid #f1f5f9;
 }
 
-/* Image Fix: Fixed height prevents jumping */
+/* تثبيت ارتفاع الصورة */
 .card-image-wrapper {
   height: 180px; width: 100%;
   background: #e2e8f0; position: relative;
